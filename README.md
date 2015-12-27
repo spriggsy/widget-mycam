@@ -1,5 +1,5 @@
-# com-chilipeppr-widget-template
-This example widget gives you a framework for creating your own widget. Please change this description once you fork this template and create your own widget.
+# com-chilipeppr-widget-cam
+This widget loads a webcam view in ChiliPeppr via WebRTC.
 
 ![alt text](screenshot.png "Screenshot")
 
@@ -11,13 +11,13 @@ not conflict with other ChiliPeppr widgets.
 
 | Item                  | Value           |
 | -------------         | ------------- | 
-| ID                    | com-chilipeppr-widget-template |
+| ID                    | com-chilipeppr-widget-cam |
 | Name                  | Widget / Template |
-| Description           | This example widget gives you a framework for creating your own widget. Please change this description once you fork this template and create your own widget. |
-| chilipeppr.load() URL | http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-template/master/auto-generated-widget.html |
-| Edit URL              | http://ide.c9.io/chilipeppr/com-chilipeppr-widget-template |
-| Github URL            | http://github.com/chilipeppr/com-chilipeppr-widget-template |
-| Test URL              | http://com-chilipeppr-widget-template-chilipeppr.c9users.io/widget.html |
+| Description           | This widget loads a webcam view in ChiliPeppr via WebRTC. |
+| chilipeppr.load() URL | http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-cam/master/auto-generated-widget.html |
+| Edit URL              | http://ide.c9.io/chilipeppr/com-chilipeppr-widget-cam |
+| Github URL            | http://github.com/chilipeppr/com-chilipeppr-widget-cam |
+| Test URL              | http://com-chilipeppr-widget-cam-chilipeppr.c9users.io/widget.html |
 
 ## Example Code for chilipeppr.load() Statement
 
@@ -30,11 +30,11 @@ back the instance of it.
 ```javascript
 chilipeppr.load(
   "#myDivWidgetInsertedInto",
-  "http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-template/master/auto-generated-widget.html",
+  "http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-cam/master/auto-generated-widget.html",
   function() {
     // Callback after widget loaded into #myDivWidgetInsertedInto
     cprequire(
-      "inline:com-chilipeppr-widget-template", // the id you gave your widget
+      "inline:com-chilipeppr-widget-cam", // the id you gave your widget
       function(mywidget) {
         // Callback that is passed reference to your newly loaded widget
         console.log("My widget just got loaded.", mywidget);
@@ -54,7 +54,7 @@ To better understand how ChiliPeppr's subscribe() method works see amplify.js's 
 
 | Signal | Description |
 | ------ | ----------- |
-| /com-chilipeppr-widget-template/onExampleGenerate | Example: Publish this signal when we go to generate gcode. |
+| /com-chilipeppr-widget-cam/onExampleGenerate | Example: Publish this signal when we go to generate gcode. |
 
 ## Subscribe
 
@@ -89,13 +89,13 @@ The table below shows, in order, the methods and properties inside the widget/el
 
 | Item                  | Type          | Description |
 | -------------         | ------------- | ----------- |
-| id | string | "com-chilipeppr-widget-template"<br><br>The ID of the widget. You must define this and make it unique. |
-| url | string | "http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-template/master/auto-generated-widget.html" |
-| fiddleurl | string | "http://ide.c9.io/chilipeppr/com-chilipeppr-widget-template" |
-| githuburl | string | "http://github.com/chilipeppr/com-chilipeppr-widget-template" |
-| testurl | string | "http://com-chilipeppr-widget-template-chilipeppr.c9users.io/widget.html" |
+| id | string | "com-chilipeppr-widget-cam"<br><br>The ID of the widget. You must define this and make it unique. |
+| url | string | "http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-cam/master/auto-generated-widget.html" |
+| fiddleurl | string | "http://ide.c9.io/chilipeppr/com-chilipeppr-widget-cam" |
+| githuburl | string | "http://github.com/chilipeppr/com-chilipeppr-widget-cam" |
+| testurl | string | "http://com-chilipeppr-widget-cam-chilipeppr.c9users.io/widget.html" |
 | name | string | "Widget / Template" |
-| desc | string | "This example widget gives you a framework for creating your own widget. Please change this description once you fork this template and create your own widget." |
+| desc | string | "This widget loads a webcam view in ChiliPeppr via WebRTC." |
 | publish | object | Please see docs above.<br><br>Define the publish signals that this widget/element owns or defines so thatother widgets know how to subscribe to them and what they do. |
 | subscribe | object | Please see docs above.<br><br>Define the subscribe signals that this widget/element owns or defines so thatother widgets know how to subscribe to them and what they do. |
 | foreignPublish | object | Please see docs above.<br><br>Document the foreign publish signals, i.e. signals owned by other widgetsor elements, that this widget/element publishes to. |
