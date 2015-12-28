@@ -291,6 +291,8 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 this.server = document.getElementById("signalling_server").value.toLowerCase();
 
                 var protocol = location.protocol === "https:" ? "wss:" : "ws:";
+                // for now force to ssl
+                protocol = "wss:";
                 this.ws = new WebSocket(protocol + '//' + this.server + '/stream/webrtc');
 
                 var that = this;
