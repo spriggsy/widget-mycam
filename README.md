@@ -3,7 +3,7 @@ This widget loads a webcam view in ChiliPeppr via WebRTC.
 
 ![alt text](screenshot.png "Screenshot")
 
-## ChiliPeppr Widget / Template
+## ChiliPeppr Widget / Cam
 
 All ChiliPeppr widgets/elements are defined using cpdefine() which is a method
 that mimics require.js. Each defined object must have a unique ID so it does
@@ -12,7 +12,7 @@ not conflict with other ChiliPeppr widgets.
 | Item                  | Value           |
 | -------------         | ------------- | 
 | ID                    | com-chilipeppr-widget-cam |
-| Name                  | Widget / Template |
+| Name                  | Widget / Cam |
 | Description           | This widget loads a webcam view in ChiliPeppr via WebRTC. |
 | chilipeppr.load() URL | http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-cam/master/auto-generated-widget.html |
 | Edit URL              | http://ide.c9.io/chilipeppr/com-chilipeppr-widget-cam |
@@ -90,12 +90,12 @@ The table below shows, in order, the methods and properties inside the widget/el
 | Item                  | Type          | Description |
 | -------------         | ------------- | ----------- |
 | id | string | "com-chilipeppr-widget-cam"<br><br>The ID of the widget. You must define this and make it unique. |
+| name | string | "Widget / Cam" |
+| desc | string | "This widget loads a webcam view in ChiliPeppr via WebRTC." |
 | url | string | "http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-cam/master/auto-generated-widget.html" |
 | fiddleurl | string | "http://ide.c9.io/chilipeppr/com-chilipeppr-widget-cam" |
 | githuburl | string | "http://github.com/chilipeppr/com-chilipeppr-widget-cam" |
 | testurl | string | "http://com-chilipeppr-widget-cam-chilipeppr.c9users.io/widget.html" |
-| name | string | "Widget / Template" |
-| desc | string | "This widget loads a webcam view in ChiliPeppr via WebRTC." |
 | publish | object | Please see docs above.<br><br>Define the publish signals that this widget/element owns or defines so thatother widgets know how to subscribe to them and what they do. |
 | subscribe | object | Please see docs above.<br><br>Define the subscribe signals that this widget/element owns or defines so thatother widgets know how to subscribe to them and what they do. |
 | foreignPublish | object | Please see docs above.<br><br>Document the foreign publish signals, i.e. signals owned by other widgetsor elements, that this widget/element publishes to. |
