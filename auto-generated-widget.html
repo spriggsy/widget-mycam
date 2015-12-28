@@ -188,9 +188,12 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
          */
         initCam: function() {
             
-            // command to run on raspberry pi after installing uv4l
-            // sudo uv4l -nopreview --auto-video_nr --driver uvc --device-id 1908:2311 --server-option '--use-ssl=yes' --server-option '--ssl-certificate-file=/etc/uv4l/cp.includesprivatekey.pem' -v -f
+            // you need to install uv4l on raspi
+            // follow the instructions at
+            // http://www.linux-projects.org/modules/sections/index.php?op=viewarticle&artid=14
             
+            // you need to activate ssl so it works inside cloud9
+            //
             // ok, here's the deal with generating certs for uv4l. run this command
             // the important part is the -nodes where no password is attached
             // to the file so that uv4l can read it in
@@ -206,6 +209,9 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             //
             // and then the command line to run uv4l
             // sudo uv4l --config-file=/etc/uv4l/uv4l-cam.conf --device-id 1908:2311 -v -f
+            //
+            // optional command to run on raspberry pi after installing uv4l
+            // sudo uv4l -nopreview --auto-video_nr --driver uvc --device-id 1908:2311 --server-option '--use-ssl=yes' --server-option '--ssl-certificate-file=/etc/uv4l/cp.includesprivatekey.pem' -v -f
 
             
             /*
