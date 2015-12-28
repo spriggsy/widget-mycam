@@ -101,6 +101,34 @@ The table below shows, in order, the methods and properties inside the widget/el
 | foreignPublish | object | Please see docs above.<br><br>Document the foreign publish signals, i.e. signals owned by other widgetsor elements, that this widget/element publishes to. |
 | foreignSubscribe | object | Please see docs above.<br><br>Document the foreign subscribe signals, i.e. signals owned by other widgetsor elements, that this widget/element subscribes to. |
 | init | function | function () <br><br>All widgets should have an init method. It should be run by theinstantiating code like a workspace or a different widget. |
+| signalling_server_hostname | string | "localhost" |
+| signalling_server_address | string | "undefined:443" |
+| isFirefox | boolean |  |
+| initCam | function | function () <br><br>Initialize the Cam widget |
+| onBtnStartClick | function | function (evt)  |
+| onBtnStopClick | function | function (evt)  |
+| ws | object |  |
+| pc | object |  |
+| audio_video_stream | object |  |
+| pcConfig | object |  |
+| pcOptions | object |  |
+| mediaConstraints | object |  |
+| RTCPeerConnection | object |  |
+| RTCSessionDescription | object |  |
+| RTCIceCandidate | object |  |
+| URL | object |  |
+| createPeerConnection | function | function ()  |
+| onIceCandidate | function | function (event)  |
+| onRemoteStreamAdded | function | function (event)  |
+| onRemoteStreamRemoved | function | function (event)  |
+| server | object |  |
+| start | function | function ()  |
+| offer | function | function (stream)  |
+| stop | function | function ()  |
+| mute | function | function ()  |
+| pause | function | function ()  |
+| fullscreen | function | function ()  |
+| singleselection | function | function (name, id)  |
 | btnSetup | function | function () <br><br>Call this method from init to setup all the buttons when this widgetis first loaded. This basically attaches click events to your buttons. It also turns on all the bootstrap popovers by scanningthe entire DOM of the widget. |
 | onHelloBtnClick | function | function (evt) <br><br>onHelloBtnClick is an example of a button click event callback |
 | options | object | User options are available in this property for reference by yourmethods. If any change is made on these options, please callsaveOptionsLocalStorage() |

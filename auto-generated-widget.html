@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-    <title>Widget / Machine Vision</title>
+    <title>Widget / Cam</title>
 
     <!-- ChiliPeppr is based on bootstrap CSS. -->
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -15,16 +15,37 @@
 
     <style type='text/css'>
 /* CSS for ChiliPeppr Widget */
-
-#com-chilipeppr-widget-template {
+#com-chilipeppr-widget-cam {
    
 }
 
-#com-chilipeppr-widget-template .nav-tabs>li>a {
+#com-chilipeppr-widget-cam .nav-tabs>li>a {
     padding: 2px 6px;
 }
 
-
+#com-chilipeppr-widget-cam .panel-body {
+    padding:0;
+}
+    
+#com-chilipeppr-widget-cam .overlayWrapper {
+    position:relative;
+    margin:0;
+    padding:0;
+}
+#com-chilipeppr-widget-cam .cam-line-horiz {
+    border-top: 1px solid red;
+    top:50%;
+    left:0;
+    right:0;
+    position:absolute;
+}
+#com-chilipeppr-widget-cam .cam-line-vert {
+    border-left: 1px solid red;
+    top:0;
+    left:50%;
+    bottom:0;
+    position:absolute;
+}
     </style>
 
     <script type='text/javascript'>
@@ -154,9 +175,392 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             this.setupUiFromLocalStorage();
             this.btnSetup();
             this.forkSetup();
+            
+            this.initCam();
 
             console.log("I am done being initted.");
         },
+        signalling_server_hostname : "localhost", //location.hostname || "192.168.1.16",
+        signalling_server_address : this.signalling_server_hostname + ':' + 443, //(location.port || 80),
+        isFirefox : typeof InstallTrigger !== 'undefined', // Firefox 1.0+
+        /**
+         * Initialize the Cam widget
+         */
+        initCam: function() {
+            
+            // command to run on raspberry pi after installing uv4l
+            // sudo uv4l -nopreview --auto-video_nr --driver uvc --device-id 1908:2311 --server-option '--use-ssl=yes' --server-option '--ssl-certificate-file=/etc/uv4l/cp.includesprivatekey.pem' -v -f
+            
+            // ok, here's the deal with generating certs for uv4l. run this command
+            // the important part is the -nodes where no password is attached
+            // to the file so that uv4l can read it in
+            // sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt
+            //
+            // for the config file, here are the key items
+            // server-option = --use-ssl=yes
+            // server-option = --ssl-private-key-file=/etc/uv4l/nginx.key
+            // server-option = --ssl-certificate-file=/etc/uv4l/nginx.crt
+            // driver = uvc
+            // device-id = 1908:2311
+            // auto-video_nr = yes
+            //
+            // and then the command line to run uv4l
+            // sudo uv4l --config-file=/etc/uv4l/uv4l-cam.conf --device-id 1908:2311 -v -f
+
+            
+            /*
+            addEventListener("DOMContentLoaded", function() {
+                document.getElementById('signalling_server').value = signalling_server_address;
+                if (!('MediaSource' in window) || location.protocol !== "https:" || !isFirefox) {
+                    if (document.getElementById('cast_tab'))
+                        document.getElementById('cast_tab').disabled = true;
+                    document.getElementById('cast_screen').disabled = true;
+                    document.getElementById('cast_window').disabled = true;
+                    document.getElementById('cast_application').disabled = true;
+                    document.getElementById('note2').style.display = "none";
+                    document.getElementById('note4').style.display = "none";
+                } else {
+                    document.getElementById('note1').style.display = "none";
+                    document.getElementById('note3').style.display = "none";
+                }
+            });
+            */  
+            
+            window.onbeforeunload = function() {
+                if (this.ws) {
+                    this.ws.onclose = function () {}; // disable onclose handler first
+                    this.stop();
+                }
+            };
+            
+            navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
+            this.RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+            this.RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
+            this.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate
+            this.URL =  window.URL || window.webkitURL
+
+            // bind button click events
+            $('#com-chilipeppr-widget-cam .btn-startstreaming').click(this.onBtnStartClick.bind(this));
+            $('#com-chilipeppr-widget-cam .btn-stopstreaming').click(this.onBtnStopClick.bind(this));
+            this.start();
+
+        },
+        onBtnStartClick: function(evt) {
+            // hide popover
+            $('#' + this.id + " .btn-startstreaming").popover('hide');
+            this.start();
+        },
+        onBtnStopClick: function(evt) {
+            // hide popover
+            $('#' + this.id + " .btn-stopstreaming").popover('hide');
+            this.stop();
+        },
+        ws: null,
+        pc: null, 
+        audio_video_stream: null,
+        pcConfig : {"iceServers": [
+                {"urls": ["stun:stun.l.google.com:19302"/*, "stun:" + signalling_server_hostname + ":3478"*/]}
+            ]},
+        pcOptions: {
+            optional: [
+                {DtlsSrtpKeyAgreement: true}
+            ]
+        },
+        mediaConstraints: {
+            optional: [],
+            mandatory: {
+                OfferToReceiveAudio: true,
+                OfferToReceiveVideo: true
+            }
+        },
+        RTCPeerConnection: {},
+        RTCSessionDescription: {},
+        RTCIceCandidate: {},
+        URL: {},
+        createPeerConnection: function() {
+            try {
+                var pcConfig_ = this.pcConfig;
+                try {
+                    this.ice_servers = document.getElementById('ice_servers').value;
+                    if (this.ice_servers) {
+                        pcConfig_.iceServers = JSON.parse(this.ice_servers);
+                    }
+                } catch (e) {
+                    alert(e + "\nExample: "
+                            + '\n[ {"urls": "stun:stun1.example.net"}, {"urls": "turn:turn.example.org", "username": "user", "credential": "myPassword"} ]'
+                            + "\nContinuing with built-in RTCIceServer array");
+                }
+                console.log(JSON.stringify(pcConfig_));
+                this.pc = new this.RTCPeerConnection(pcConfig_, this.pcOptions);
+                this.pc.onicecandidate = this.onIceCandidate.bind(this);
+                this.pc.onaddstream = this.onRemoteStreamAdded.bind(this);
+                this.pc.onremovestream = this.onRemoteStreamRemoved.bind(this);
+                console.log("peer connection successfully created!");
+            } catch (e) {
+                console.log("createPeerConnection() failed");
+            }
+        },
+
+        onIceCandidate: function(event) {
+            if (event.candidate) {
+                var candidate = {
+                    sdpMLineIndex: event.candidate.sdpMLineIndex,
+                    sdpMid: event.candidate.sdpMid,
+                    candidate: event.candidate.candidate
+                };
+                var command = {
+                    command_id: "addicecandidate",
+                    data: JSON.stringify(candidate)
+                };
+                this.ws.send(JSON.stringify(command));
+            } else {
+                console.log("End of candidates.");
+            }
+        },
+
+        onRemoteStreamAdded: function(event) {
+            console.log("Remote stream added:", this.URL.createObjectURL(event.stream));
+            var remoteVideoElement = document.getElementById('remote-video');
+            remoteVideoElement.src = this.URL.createObjectURL(event.stream);
+            remoteVideoElement.play();
+        },
+
+        onRemoteStreamRemoved: function(event) {
+            var remoteVideoElement = document.getElementById('remote-video');
+            remoteVideoElement.src = '';
+        },
+
+
+        server: null,
+        start: function() {
+            // debugger;
+            if ("WebSocket" in window) {
+                //document.getElementById("stop").disabled = false;
+                //document.getElementById("start").disabled = true;
+                $('#com-chilipeppr-widget-cam .btn-stopstreaming').prop('disabled', false);
+                $('#com-chilipeppr-widget-cam .btn-startstreaming').prop('disabled', true);
+                document.documentElement.style.cursor ='wait';
+                this.server = document.getElementById("signalling_server").value.toLowerCase();
+
+                var protocol = location.protocol === "https:" ? "wss:" : "ws:";
+                this.ws = new WebSocket(protocol + '//' + this.server + '/stream/webrtc');
+
+                var that = this;
+                
+                this.ws.onopen = function () {
+                    console.log("onopen()");
+
+                    that.audio_video_stream = null;
+                    /*
+                    var cast_mic = document.getElementById("cast_mic").checked;
+                    var cast_tab = document.getElementById("cast_tab") ? document.getElementById("cast_tab").checked : false;
+                    var cast_camera = document.getElementById("cast_camera").checked;
+                    var cast_screen = document.getElementById("cast_screen").checked;
+                    var cast_window = document.getElementById("cast_window").checked;
+                    var cast_application = document.getElementById("cast_application").checked;
+                    var echo_cancellation = document.getElementById("echo_cancellation").checked;
+                    
+                    var localConstraints = {};
+                    if (cast_mic) {
+                        if (echo_cancellation)
+                            localConstraints['audio'] = { optional: [{ echoCancellation: true }] };
+                        else
+                            localConstraints['audio'] = { optional: [{ echoCancellation: false }] };
+                    } else if (cast_tab)
+                        localConstraints['audio'] = { mediaSource: "audioCapture" };
+                    if (cast_camera)
+                        localConstraints['video'] = true;
+                    else if (cast_screen)
+                        localConstraints['video'] = { frameRate: { ideal: 15, max: 30 }, mozMediaSource: "screen", mediaSource: "screen" };
+                    else if (cast_window)
+                        localConstraints['video'] = { frameRate: { ideal: 15, max: 30 }, mozMediaSource: "window", mediaSource: "window" };
+                    else if (cast_application)
+                        localConstraints['video'] = { frameRate: { ideal: 15, max: 30 }, mozMediaSource: "application", mediaSource: "application" };
+                    else
+                        localConstraints['audio'] = false;
+
+                    this.localVideoElement = document.getElementById('local-video');
+                    if (localConstraints.audio || localConstraints.video) {
+                        if (navigator.getUserMedia) {
+                            navigator.getUserMedia(localConstraints, function(stream) {
+                                this.audio_video_stream = stream;
+                                offer(stream);
+                                this.localVideoElement.muted = true;
+                                this.localVideoElement.src = this.URL.createObjectURL(stream);
+                                this.localVideoElement.play();
+                            }, function(error) {
+                                this.stop();
+                                alert("An error has occurred. Check media permissions.");
+                                console.log(error);
+                            });
+                        } else {
+                            console.log("getUserMedia not supported");
+                        }
+                    } else {
+                        offer();
+                    }
+                    */
+                    that.offer();
+                };
+
+                this.ws.onmessage = function (evt) {
+                    var msg = JSON.parse(evt.data);
+                    //console.log("message=" + msg);
+                    console.log("type=" + msg.type);
+
+                    switch (msg.type) {
+                        case "offer":
+                            that.pc.setRemoteDescription(new that.RTCSessionDescription(msg),
+                                function onRemoteSdpSuccess() {
+                                    console.log('onRemoteSdpSucces()');
+                                    that.pc.createAnswer(function (sessionDescription) {
+                                        that.pc.setLocalDescription(sessionDescription);
+                                        var command = {
+                                            command_id: "answer",
+                                            data: JSON.stringify(sessionDescription)
+                                        };
+                                        that.ws.send(JSON.stringify(command));
+                                        console.log(command);
+
+                                    }, function (error) {
+                                        alert("Failed to createAnswer: " + error);
+
+                                    }, that.mediaConstraints);
+                                },
+                                function onRemoteSdpError(event) {
+                                    alert('Failed to setRemoteDescription: ' + event);
+                                }
+                            );
+
+                            var command = {
+                                command_id: "geticecandidate"
+                            };
+                            console.log(command);
+                            that.ws.send(JSON.stringify(command));
+                            break;
+
+                        case "answer":
+                            break;
+
+                        case "message":
+                            alert(msg.data);
+                            break;
+
+                        case "geticecandidate":
+                            var candidates = JSON.parse(msg.data);
+                            for (var i = 0; i < candidates.length; i++) {
+                                var elt = candidates[i];
+                                var candidate = new that.RTCIceCandidate({sdpMLineIndex: elt.sdpMLineIndex, candidate: elt.candidate});
+                                that.pc.addIceCandidate(candidate,
+                                    function () {
+                                        console.log("IceCandidate added: " + JSON.stringify(candidate));
+                                    },
+                                    function (error) {
+                                        console.log("addIceCandidate error: " + error);
+                                    }
+                                );
+                            }
+                            document.documentElement.style.cursor ='default';
+                            break;
+                    }
+                };
+
+                this.ws.onclose = function (evt) {
+                    if (that.pc) {
+                        that.pc.close();
+                        that.pc = null;
+                    }
+                    //document.getElementById("stop").disabled = true;
+                    //document.getElementById("start").disabled = false;
+                    $('#com-chilipeppr-widget-cam .btn-stopstreaming').prop('disabled', true);
+                    $('#com-chilipeppr-widget-cam .btn-startstreaming').prop('disabled', false);
+
+                    document.documentElement.style.cursor ='default';
+                };
+
+                this.ws.onerror = function (evt) {
+                    alert("An error has occurred!");
+                    if (that.ws) that.ws.close();
+                };
+
+            } else {
+                alert("Sorry, this browser does not support WebSockets.");
+            }
+        },
+        
+        offer: function(stream) {
+            this.createPeerConnection();
+            if (stream) {
+                this.pc.addStream(stream);
+            }
+            var command = {
+                command_id: "offer"
+            };
+            this.ws.send(JSON.stringify(command));
+            console.log("offer(), command=" + JSON.stringify(command));
+        },
+
+        stop: function() {
+            if (this.audio_video_stream) {
+                try {
+                    this.audio_video_stream.stop();
+                } catch (e) {
+                    for (var i = 0; i < this.audio_video_stream.getTracks().length; i++)
+                        this.audio_video_stream.getTracks()[i].stop();
+                }
+                this.audio_video_stream = null;
+            }
+            //document.getElementById('remote-video').src = '';
+            $(this.id + " .remote-video").src = '';
+            //document.getElementById('local-video').src = '';
+            if (this.pc) {
+                this.pc.close();
+                this.pc = null;
+            }
+            if (this.ws) {
+                this.ws.close();
+                this.ws = null;
+            }
+            $('#' + this.id + " .btn-stopstreaming").prop('disabled', true);
+            $('#' + this.id + " .btn-startstreaming").prop('disabled', false);
+            //document.getElementById("stop").disabled = true;
+            //document.getElementById("start").disabled = false;
+            //document.documentElement.style.cursor ='default';
+        },
+
+        mute: function() {
+            var remoteVideo = document.getElementById("remote-video");
+            remoteVideo.muted = !remoteVideo.muted;
+        },
+
+        pause: function() {
+            var remoteVideo = document.getElementById("remote-video");
+            if (remoteVideo.paused)
+                remoteVideo.play();
+            else
+                remoteVideo.pause();
+        },
+
+        fullscreen: function() {
+            var remoteVideo = document.getElementById("remote-video");
+            if(remoteVideo.requestFullScreen){
+                remoteVideo.requestFullScreen();
+            } else if(remoteVideo.webkitRequestFullScreen){
+                remoteVideo.webkitRequestFullScreen();
+            } else if(remoteVideo.mozRequestFullScreen){
+                remoteVideo.mozRequestFullScreen();
+    	    }
+        },
+
+        singleselection: function(name, id) {
+            var old = document.getElementById(id).checked;
+            var elements = document.getElementsByName(name);
+            for(var i = 0; i < elements.length; i++) {
+                elements[i].checked = false;
+            }
+            document.getElementById(id).checked = old ? true : false;
+        },
+
         /**
          * Call this method from init to setup all the buttons when this widget
          * is first loaded. This basically attaches click events to your 
@@ -367,12 +771,20 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
 </head>
 
 <body>
-    <div id="com-chilipeppr-widget-template" class="panel panel-default">
+    <div id="com-chilipeppr-widget-cam" class="panel panel-default">
         <div class="panel-heading ">
 
             <div class="btn-toolbar pull-right" role="toolbar">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-xs btn-default btn-sayhello" data-delay="1000" data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" data-title="Say Hello" data-content="Generate a hello message">Say Hello
+                    <button type="button" class="btn btn-xs btn-default btn-stopstreaming" data-delay="1000" 
+                    data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
+                    data-title="Stop Streaming" data-content="Stop streaming the video feed from your server."><span 
+                    class="glyphicon glyphicon-remove-circle"></span>
+                    </button>
+                    <button type="button" class="btn btn-xs btn-default btn-startstreaming" data-delay="1000" 
+                    data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
+                    data-title="Start Streaming" data-content="Start streaming the video feed from your server."><span 
+                    class="glyphicon glyphicon-ok-circle"></span>
                     </button>
                 </div>
                 <div class="btn-group">
@@ -386,38 +798,22 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">Template Widget</span> <span style="font-size:9px;" class="fb-build">v1</span>
+            </div> <span class="panel-title" data-toggle="popover">Cam</span> <span style="font-size:9px;" class="fb-build">v1</span>
 
         </div>
         <div class="panel-body">
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="active"><a href="#com-chilipeppr-widget-template-tab1" role="tab" data-toggle="tab">Tab 1</a>
-                </li>
-                <li><a href="#com-chilipeppr-widget-template-tab2" role="tab" data-toggle="tab">Tab 2</a></li>
-                <li><a href="#com-chilipeppr-widget-template-tab3" role="tab" data-toggle="tab">Tab 3</a></li>
-            </ul>
-            <!-- Tab panes -->
-
-            <!-- Tab 1 -->
-            <div class="tab-content">
-                <div class="tab-pane active" id="com-chilipeppr-widget-template-tab1">
-                    <p>This is the content of tab 1.</p>
-                    <div class="">
-                        <button type="button" class="btn btn-xs btn-default btn-helloworld2" style="margin: 4px 0;">Hello World 2</button>
-                    </div>
-                </div>
-
-                <!-- Tab 2 -->
-                <div class="tab-pane" id="com-chilipeppr-widget-template-tab2">
-                    <p>This is the content of tab 2.</p>
-                </div>
-
-                <!-- Tab 3 -->
-                <div class="tab-pane" id="com-chilipeppr-widget-template-tab3">
-                    <p>This is the content of tab 3.</p>
-                </div>
-
+            
+            <input class="hidden" required type="text" id="signalling_server" value="192.168.1.16:8889" 
+                title="<host>:<port>, default address is autodetected"/>
+            <input class="hidden" type="text" id="ice_servers" value="" 
+            title="array of RTCIceServer objects as valid JSON string"/>
+            
+            <div class="overlayWrapper">
+                <video id="remote-video" autoplay="" width="100%" xwidth="640" xheight="480">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="cam-line-horiz"></div>
+                <div class="cam-line-vert"></div>
             </div>
 
         </div>
