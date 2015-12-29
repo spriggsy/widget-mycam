@@ -14,9 +14,9 @@ not conflict with other ChiliPeppr widgets.
 | ID                    | com-chilipeppr-widget-cam |
 | Name                  | Widget / Cam |
 | Description           | This widget loads a webcam view in ChiliPeppr via WebRTC. |
-| chilipeppr.load() URL | http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-cam/master/auto-generated-widget.html |
+| chilipeppr.load() URL | http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-template/master/auto-generated-widget.html |
 | Edit URL              | http://ide.c9.io/chilipeppr/com-chilipeppr-widget-cam |
-| Github URL            | http://github.com/chilipeppr/com-chilipeppr-widget-cam |
+| Github URL            | http://github.com/chilipeppr/com-chilipeppr-widget-template |
 | Test URL              | http://com-chilipeppr-widget-cam-chilipeppr.c9users.io/widget.html |
 
 ## Example Code for chilipeppr.load() Statement
@@ -30,7 +30,7 @@ back the instance of it.
 ```javascript
 chilipeppr.load(
   "#myDivWidgetInsertedInto",
-  "http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-cam/master/auto-generated-widget.html",
+  "http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-template/master/auto-generated-widget.html",
   function() {
     // Callback after widget loaded into #myDivWidgetInsertedInto
     cprequire(
@@ -92,9 +92,9 @@ The table below shows, in order, the methods and properties inside the widget/el
 | id | string | "com-chilipeppr-widget-cam"<br><br>The ID of the widget. You must define this and make it unique. |
 | name | string | "Widget / Cam" |
 | desc | string | "This widget loads a webcam view in ChiliPeppr via WebRTC." |
-| url | string | "http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-cam/master/auto-generated-widget.html" |
+| url | string | "http://raw.githubusercontent.com/chilipeppr/com-chilipeppr-widget-template/master/auto-generated-widget.html" |
 | fiddleurl | string | "http://ide.c9.io/chilipeppr/com-chilipeppr-widget-cam" |
-| githuburl | string | "http://github.com/chilipeppr/com-chilipeppr-widget-cam" |
+| githuburl | string | "http://github.com/chilipeppr/com-chilipeppr-widget-template" |
 | testurl | string | "http://com-chilipeppr-widget-cam-chilipeppr.c9users.io/widget.html" |
 | publish | object | Please see docs above.<br><br>Define the publish signals that this widget/element owns or defines so thatother widgets know how to subscribe to them and what they do. |
 | subscribe | object | Please see docs above.<br><br>Define the subscribe signals that this widget/element owns or defines so thatother widgets know how to subscribe to them and what they do. |

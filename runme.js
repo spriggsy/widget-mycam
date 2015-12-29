@@ -725,6 +725,9 @@ var generateWidgetDocs = function() {
   var widgetUrl = 'http://' +
     process.env.C9_PROJECT + '-' + process.env.C9_USER +
     '.c9users.io/widget.html';
+  var testUrl = 'https://preview.c9users.io/' +
+    process.env.C9_USER + '/' +
+    process.env.C9_PROJECT + '/widget.html';
   var editUrl = 'http://ide.c9.io/' +
     process.env.C9_USER + '/' +
     process.env.C9_PROJECT;
@@ -736,7 +739,7 @@ var generateWidgetDocs = function() {
   html = html.replace(/\$pubsub-url/g, github.rawurl);
   html = html.replace(/\$pubsub-fiddleurl/g, editUrl);
   html = html.replace(/\$pubsub-github/g, github.url);
-  html = html.replace(/\$pubsub-testurl/g, widgetUrl);
+  html = html.replace(/\$pubsub-testurl/g, testUrl);
   
   var cpload = generateCpLoadStmt();
   html = html.replace(/\$cp-load-stmt/g, cpload);
@@ -865,6 +868,19 @@ var generateInlinedFile = function() {
   var fileHtml = fs.readFileSync("widget.html").toString();
   var fileJs = widgetSrc; // fs.readFileSync("widget.js").toString();
 
+  // auto fill title if they're asking for it
+  if (widget) {
+    var re = /<title><!--\(auto-fill by runme\.js--><\/title>/i;
+    if (fileHtml.match(re)) {
+    fileHtml = fileHtml.replace(re, "<title>" + widget.name + "</title>");
+    console.log("Swapped in title for final HTML page.");
+    } else {
+      console.log('Went to swap in title, but the auto fill comment not found.');
+    }
+  } else {
+    console.log("Could not auto-fill title of HTML page because widget object not defined.");
+  }
+
   // now inline css
   var re = /<!-- widget.css[\s\S]*?end widget.css -->/i;
   fileHtml = fileHtml.replace(re,
@@ -938,15 +954,28 @@ var getGithubUrl = function(callback) {
   // read the git repo meta data to figure this out
   var url = "";
   var path = ".git/FETCH_HEAD";
+  
 
   if (fs.existsSync(path)) {
 
     var data = fs.readFileSync(path).toString();
+
+    // test data
+    //data = "99b78fc488c3874b40ecf0df4030a0d2747276aa                branch 'master' of https://github.com/xpix/chilipeppr-calibrate-widget\n";
+
     //console.log("git url:", data);
     data = data.replace(/[\r\n]/g, "");
 
-    var re = /.*github.com:/;
+    // handle situations where FETCH_HEAD looks like
+    // 61327dc3e756d101a6dc10526d6788e0c6602da9        not-for-merge   branch 'master' of github.com:chilipeppr/com-chilipeppr-widget-template
+    var re = /.*github.com:/i;
     var url = data.replace(re, "");
+    
+    // handle situations where FETCH_HEAD looks like
+    // 99b78fc488c3874b40ecf0df4030a0d2747276aa                branch 'master' of https://github.com/xpix/chilipeppr-calibrate-widget
+    re = /.*https\:\/\/github\.com\//i;   
+    url = url.replace(re, "");
+    
     url = "http://github.com/" + url;
     //console.log("final url:", url);
     
@@ -959,6 +988,7 @@ var getGithubUrl = function(callback) {
     };
   }
   else {
+    console.log('Unable to find ' + path + '. Please call "git pull" in your workspace!');
     return null;
   }
 
