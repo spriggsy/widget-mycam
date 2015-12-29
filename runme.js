@@ -951,6 +951,34 @@ var getMainPage = function() {
 
 var getGithubUrl = function(callback) {
 
+  // new approach. use the command line from git
+  // git config --get remote.origin.url
+  
+  var childproc = require('child_process');
+  var cmd = 'git config --get remote.origin.url';
+
+  var stdout = childproc.execSync(cmd, { encoding: 'utf8' });
+  console.log("Got the following Github URL:", stdout);
+
+  var re = /.*github.com:/i;
+  var url = stdout.replace(re, "");
+  url = url.replace(/.git[\s\S]*$/i, ""); // remove end
+  
+  // prepend with clean githut url
+  url = "http://github.com/" + url;
+  
+  var rawurl = url.replace(/\/github.com\//i, "/raw.githubusercontent.com/");
+  rawurl += '/master/auto-generated-widget.html';
+  
+  var ret = {
+    url: url,
+    rawurl : rawurl
+  };
+  
+  console.log("ret:", ret);
+  return ret;
+    
+  /*
   // read the git repo meta data to figure this out
   var url = "";
   var path = ".git/FETCH_HEAD";
@@ -991,5 +1019,6 @@ var getGithubUrl = function(callback) {
     console.log('Unable to find ' + path + '. Please call "git pull" in your workspace!');
     return null;
   }
+  */
 
 }
