@@ -26,32 +26,9 @@ var mimeTypes = {
 http.createServer(function(req, res) {
 
   var uri = url.parse(req.url).pathname;
-  var filename = path.join(process.cwd(), unescape(uri));
-  var stats;
-
-  try {
-    stats = fs.lstatSync(filename); // throws if path doesn't exist
-  }
-  catch (e) {
-    res.writeHead(404, {
-      'Content-Type': 'text/plain'
-    });
-    res.write('404 Not Found\n');
-    res.end();
-    return;
-  }
-
-  if (stats.isFile()) {
-    // path exists, is a file
-    var mimeType = mimeTypes[path.extname(filename).split(".").reverse()[0]];
-    res.writeHead(200, {
-      'Content-Type': mimeType
-    });
-
-    var fileStream = fs.createReadStream(filename);
-    fileStream.pipe(res);
-  }
-  else if (uri == "/") {
+  console.log("URL being requested:", uri);
+  
+  if (uri == "/") {
 
     res.writeHead(200, {
       'Content-Type': 'text/html'
@@ -63,31 +40,113 @@ http.createServer(function(req, res) {
     html += "<p>Generated a new README.md file...</p>";
     generateInlinedFile();
     html += "<p>Generated a new auto-generated-widget.html file...</p>";
-    pushToGithub();
+    //pushToGithub();
+    //pushToGithubSync();
+    pushToGithubAsync();
     html += "<p>Pushed updates to Github...</p>";
 
     res.end(html);
 
-  }
-  else if (stats.isDirectory()) {
-    // path exists, is a directory
+  } 
+  else if (uri == "/pushtogithub") {
+    
+    console.log("/pushtogithub called");
+    
+    var stdout = pushToGithubSync()
+    
+    var json = {
+      success: true,
+      desc: "Pushed to Github",
+      log: stdout
+    }
+    
     res.writeHead(200, {
-      'Content-Type': 'text/plain'
+      'Content-Type': 'application/json'
     });
-    res.write('Index of ' + uri + '\n');
-    res.write('TODO, show index?\n');
-    res.end();
-  }
-  else {
-    // Symbolic link, other?
-    // TODO: follow symlinks?  security?
-    res.writeHead(500, {
-      'Content-Type': 'text/plain'
+    res.end(JSON.stringify(json));
+  }    
+  else if (uri == "/pullfromgithub") {
+    
+    console.log("/pullfromgithub called");
+    
+    var stdout = pullFromGithubSync();
+    
+    var json = {
+      success: true,
+      desc: "Pulled from Github",
+      log: stdout
+    }
+    
+    res.writeHead(200, {
+      'Content-Type': 'application/json'
     });
-    res.write('500 Internal server error\n');
-    res.end();
-  }
+    res.end(JSON.stringify(json));
+    
+  }    
+  else if (uri == "/mergeFromCpTemplateRepo") {
+    
+    console.log("/mergeFromCpTemplateRepo called");
+    
+    var stdout = mergeFromCpTemplateRepo();
+    
+    var json = {
+      success: true,
+      desc: "Merged the latest ChiliPeppr Template to this repo. Please check for merge conflicts. You can run \"git status\" for a summary of conflicts, if any.",
+      log: stdout
+    }
+    
+    res.writeHead(200, {
+      'Content-Type': 'application/json'
+    });
+    res.end(JSON.stringify(json));
+    
+  } else {
 
+    var filename = path.join(process.cwd(), unescape(uri));
+    var stats;
+  
+    try {
+      stats = fs.lstatSync(filename); // throws if path doesn't exist
+    }
+    catch (e) {
+      res.writeHead(404, {
+        'Content-Type': 'text/plain'
+      });
+      res.write('404 Not Found\n');
+      res.end();
+      return;
+    }
+  
+    if (stats.isFile()) {
+      // path exists, is a file
+      var mimeType = mimeTypes[path.extname(filename).split(".").reverse()[0]];
+      res.writeHead(200, {
+        'Content-Type': mimeType
+      });
+  
+      var fileStream = fs.createReadStream(filename);
+      fileStream.pipe(res);
+    }
+    else if (stats.isDirectory()) {
+      // path exists, is a directory
+      res.writeHead(200, {
+        'Content-Type': 'text/plain'
+      });
+      res.write('Index of ' + uri + '\n');
+      res.write('TODO, show index?\n');
+      res.end();
+    }
+    else {
+      // Symbolic link, other?
+      // TODO: follow symlinks?  security?
+      res.writeHead(500, {
+        'Content-Type': 'text/plain'
+      });
+      res.write('500 Internal server error\n');
+      res.end();
+    }
+    
+  }
 
 }).listen(process.env.PORT);
 
@@ -119,7 +178,7 @@ var evalWidgetJs = function() {
   var github = getGithubUrl();
 
   var reUrl = /(url\s*:\s*['"]?)\(auto fill by runme\.js\)/;
-  console.log("reUrl:", reUrl);
+  //console.log("reUrl:", reUrl);
   widgetSrc = widgetSrc.replace(reUrl, "$1" + github.rawurl);
   widgetSrc = widgetSrc.replace(/(fiddleurl\s*:\s*['"]?)\(auto fill by runme\.js\)/, "$1" + editUrl);
   widgetSrc = widgetSrc.replace(/(githuburl\s*:\s*['"]?)\(auto fill by runme\.js\)/, "$1" + github.url);
@@ -129,7 +188,7 @@ var evalWidgetJs = function() {
   //fs.writeFileSync('widget.js', widgetSrc);
   
   eval(widgetSrc);
-  console.log("evaled the widget.js");
+  //console.log("evaled the widget.js");
   //isEvaled = true;
   
   // generate docs
@@ -291,7 +350,7 @@ cpdefine = function(myid, mydeps, callback) {
   widget = callback();
   id = myid;
   deps = mydeps;
-  console.log("cool, our own cpdefine got called. id:", id, "deps:", deps);
+  //console.log("cool, our own cpdefine got called. id:", id, "deps:", deps);
 }
 // define other top-level methods just to avoid errors
 requirejs = function() {}
@@ -509,10 +568,97 @@ var generateWidgetDocs = function() {
     
     <style type='text/css'>
     </style>
+    
+    <script type='text/javascript'>
+      //<![CDATA[
+      
+      $(function() {
+      
+      function ajaxPushToGithub() {
+        console.log("pushing to github...");
+        $('.ajax-results').removeClass('hidden').html("Pushing your changes to Github");
+        $.ajax({
+          url: "pushtogithub"
+        })
+        .done(function( data ) {
+          if ( console && console.log ) {
+            console.log( "Data back from pushtogithub:", data );
+            if (data && data.success) {
+              // success
+              $('.ajax-results').html(data.desc + "<br><br>" + "<pre>" + data.log + "</pre>");
+            } else {
+              // error 
+              $('.ajax-results').html("<pre>ERROR:" + JSON.stringify(data, null, "\t") + "</pre>");
+            }
+          }
+        });
+      }
+      
+      function ajaxPullFromGithub() {
+        console.log("pushing to github...");
+        $('.ajax-results').removeClass('hidden').html("Pulling your changes from Github");
+        $.ajax({
+          url: "pullfromgithub"
+        })
+        .done(function( data ) {
+          if ( console && console.log ) {
+            console.log( "Data back from pushtogithub:", data );
+            if (data && data.success) {
+              // success
+              $('.ajax-results').html(data.desc + "<br><br>" + "<pre>" + data.log + "</pre>");
+            } else {
+              // error 
+              $('.ajax-results').html("<pre>ERROR:" + JSON.stringify(data, null, "\t") + "</pre>");
+            }
+          }
+        });
+      }
+      
+      function ajaxMergeFromCpTemplateRepo() {
+        console.log("ajaxMergeFromCpTemplateRepo to github...");
+        $('.ajax-results').removeClass('hidden').html("Merging the latest changes (if any) from the ChiliPeppr Template to your fork");
+        $.ajax({
+          url: "mergeFromCpTemplateRepo"
+        })
+        .done(function( data ) {
+          if ( console && console.log ) {
+            console.log( "Data back from ajaxMergeFromCpTemplateRepo:", data );
+            if (data && data.success) {
+              // success
+              $('.ajax-results').html(data.desc + "<br><br>" + "<pre>" + data.log + "</pre>");
+            } else {
+              // error 
+              $('.ajax-results').html("<pre>ERROR:" + JSON.stringify(data, null, "\t") + "</pre>");
+            }
+          }
+        });
+      }
+      
+      function init() {
+        $('.btn-pushtogithub').click(ajaxPushToGithub);
+        $('.btn-pullfromgithub').click(ajaxPullFromGithub);
+        $('.btn-mergetemplate').click(ajaxMergeFromCpTemplateRepo);
+        console.log("Init complete");
+      }
+      
+      init();
+      
+      });
+      
+      //]]>
+    </script>
+    
     </head>
     <body style="padding:20px;">
     
-      <h1 class="page-header" style="margin-top:0;">$pubsub-id</h1>
+      <button class="btn btn-xs btn-default btn-pushtogithub">Push to Github</button>
+      <button class="btn btn-xs btn-default btn-pullfromgithub">Pull from Github</button>
+      <button class="btn btn-xs btn-default btn-mergetemplate">Merge the ChiliPeppr Template to this Repo</button>
+      <div class="hidden well ajax-results" style="margin-bottom:0;">
+        Results
+      </div>
+      
+      <h1 class="page-header" style="margin-top:20px;">$pubsub-id</h1>
       
       <p>$pubsub-desc</p>
 
@@ -858,6 +1004,69 @@ var pushToGithub = function() {
   console.log("Pushed to github");
 }
 
+var pushToGithubSync = function() {
+  
+  var proc = require('child_process');
+  
+  // git add *
+  // git commit -m "Made some changes to ChiliPeppr widget using Cloud9"
+  // git push
+  var stdout = "";
+  stdout += "> git add *\n";
+  stdout += '> git commit -m "Made some changes to ChiliPeppr widget using Cloud9"\n';
+  stdout += "> git push\n";
+  stdout += proc.execSync('git add *; git commit -m \"Changes made in Cloud9\"; git push;', { encoding: 'utf8' });
+  console.log("Pushed to github sync. Stdout:", stdout);
+  
+  return stdout;
+}
+
+var pushToGithubAsync = function() {
+  var exec = require('child_process').exec;
+
+  exec('git add *', function(error1, stdout1, stderr1) {
+    // command output is in stdout
+    console.log("stdout:", stdout1, "stderr:", stderr1);
+    exec('bash -c "git commit -m \"Changes made in Cloud9\""', function(error2, stdout2, stderr2) {
+      // command output is in stdout
+      console.log("stdout:", stdout2, "stderr:", stderr2);
+      exec('git push', function(error3, stdout3, stderr3) {
+        // command output is in stdout
+        console.log("stdout:", stdout3, "stderr:", stderr3);
+      });
+    });
+  });
+  console.log("Pushed to github");
+}
+
+var pullFromGithubSync = function() {
+  var proc = require('child_process');
+  
+  // git add *
+  // git commit -m "Made some changes to ChiliPeppr widget using Cloud9"
+  // git push
+  var stdout = "";
+  stdout += "> git pull\n";
+  stdout += proc.execSync('git pull', { encoding: 'utf8' });
+  console.log("Pulled from github sync. Stdout:", stdout);
+  
+  return stdout;
+}
+
+var mergeFromCpTemplateRepo = function() {
+  var proc = require('child_process');
+  
+  // git add *
+  // git commit -m "Made some changes to ChiliPeppr widget using Cloud9"
+  // git push
+  var stdout = "";
+  stdout += "> git checkout master\n";
+  stdout += "> git pull https://github.com/chilipeppr/com-chilipeppr-widget-template.git\n";
+  stdout += proc.execSync('git checkout master; git pull https://github.com/chilipeppr/com-chilipeppr-widget-template.git', { encoding: 'utf8' });
+  console.log("Pulled from github sync. Stdout:", stdout);
+  
+  return stdout;
+}
 var generateInlinedFile = function() {
   // We are developing a widget with 3 main files of css, html, and js
   // but ChiliPeppr really wants one monolithic file so we have to generate
@@ -958,7 +1167,7 @@ var getGithubUrl = function(callback) {
   var cmd = 'git config --get remote.origin.url';
 
   var stdout = childproc.execSync(cmd, { encoding: 'utf8' });
-  console.log("Got the following Github URL:", stdout);
+  //console.log("Got the following Github URL:", stdout);
 
   var re = /.*github.com:/i;
   var url = stdout.replace(re, "");
@@ -975,7 +1184,7 @@ var getGithubUrl = function(callback) {
     rawurl : rawurl
   };
   
-  console.log("ret:", ret);
+  //console.log("ret:", ret);
   return ret;
     
   /*
