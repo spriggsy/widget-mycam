@@ -69,12 +69,38 @@
             <input class="hidden" type="text" id="ice_servers" value="" 
             title="array of RTCIceServer objects as valid JSON string"/>
             
-            <div class="overlayWrapper">
+            <div class="overlayWrapper hidden">
                 <video id="remote-video" autoplay="" width="100%" xwidth="640" xheight="480">
                     Your browser does not support the video tag.
                 </video>
                 <div class="cam-line-horiz"></div>
                 <div class="cam-line-vert"></div>
+            </div>
+            
+            <div class="well notconnected hidden">
+                You are not connected to a Serial Port JSON Server. Please connect 
+                and then retry.
+            </div>
+            
+            <div class="well cantuse hidden">
+                Your SPJS is not running on a Raspberry Pi, therefore you can't 
+                use this widget.
+            </div>
+
+            <div class="well cantuse">
+                <p>Your SPJS is running on a Raspberry Pi so you are eligible to use 
+                this widget. You must click the install button to have this widget 
+                configure your Raspberry Pi automatically.</p>
+                
+                <button class="btn btn-default btn-install">Install Cam Server</button>
+                
+                <pre class="terminal">/home/pi
+                asdf
+                asdf
+                asdf
+                asdf
+                asdf
+                asdf</pre>
             </div>
 
         </div>

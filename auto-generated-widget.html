@@ -25,6 +25,7 @@
 
 #com-chilipeppr-widget-cam .panel-body {
     padding:0;
+    /*min-height:200px;*/
 }
     
 #com-chilipeppr-widget-cam .overlayWrapper {
@@ -45,6 +46,16 @@
     left:50%;
     bottom:0;
     position:absolute;
+}
+#com-chilipeppr-widget-cam .well {
+    margin-bottom:0;
+}
+#com-chilipeppr-widget-cam .terminal {
+    background-color:#000000;
+    margin-top:14px;
+    color:#cccccc;
+    overflow:auto;
+    max-height:80px;
 }
     </style>
 
@@ -109,10 +120,31 @@ cprequire_test(["inline:com-chilipeppr-widget-cam"], function(myWidget) {
         }
     );
 
-    // init my widget
-    myWidget.init();
-    $('#com-chilipeppr-widget-cam').css('padding', '10px;');
+    // load spjs widget so we can test
+    //http://fiddle.jshell.net/chilipeppr/vetj5fvx/show/light/
+    $('body').append('<div id="testDivForSpjsWidget"></div>');
+    chilipeppr.load(
+        "#testDivForSpjsWidget",
+        "http://fiddle.jshell.net/chilipeppr/vetj5fvx/show/light/",
+        function() {
+            console.log("mycallback got called after loading spjs module");
+            cprequire(["inline:com-chilipeppr-widget-serialport"], function(spjs) {
+                //console.log("inside require of " + fm.id);
+                spjs.init();
+                spjs.consoleToggle();
+                
+                // init my widget
+                myWidget.init();
 
+                $('#' + myWidget.id).css('margin', '10px');
+                $('#testDivForSpjsWidget').css('margin', '10px');
+
+            });
+        }
+    );
+    
+    $('title').html(myWidget.name);
+    
 } /*end_test*/ );
 
 // This is the main definition of your widget. Give it a unique name.
@@ -179,10 +211,202 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             this.btnSetup();
             this.forkSetup();
             
-            this.initCam();
+            //this.initCam();
+            
+            //this.subscribeToLowLevelSerial();
 
             console.log("I am done being initted.");
         },
+        /**
+         * When this widget is activated
+         */
+        activate: function() {
+            this.versionWarning();
+        },
+        /**
+         * When this widget is deactivated
+         */
+        deactivate: function() {
+            
+        },
+        /** When this widget is activated, we need to do a few things:
+         * 1. Check if there is a stored setting of what cam to connect to
+         *    because this could be a different host than what SPJS is running
+         *    on.
+         * If no setting:
+         * 1. Check if we are SPJS connected
+         * 2. Check if we are on a Raspberry Pi
+         * 3. If so, then see if uv4l is installed
+         * 4. If so, then launch it
+         * 5. Connect
+         * If not Raspi, show error.
+         * If no uv4l, go into install process.
+         */
+        initCheckForCam: function() {
+            
+            // check settings and see if there is a stored ip addr to connect to
+            
+            // else just try to see if spjs host is raspi, and has cam
+            this.checkIfSpjsConnected(function(results) {
+                if (results.connected) {
+                    // great, we're connected, lets' do next step
+                    // check if we are on linux
+                    this.checkIfLinux(function(status) {
+                        if (status.isLinux) {
+                            
+                            this.checkIfRaspberryPi(function(status) {
+                                // when we get here, we get back a status to determine
+                                // if we're on a raspi or not
+                                if (status.isRaspberryPi) {
+                                    
+                                    // awesome. we are raspi. we can install
+                                } else {
+                                    console.log("not raspi. cannot install. show error");
+                                }
+                                
+                            });
+                            
+                        } else {
+                            console.log("We are not Linux, so giving up. Show error");    
+                        }
+                    });
+                    
+                } else {
+                    // not connected, show error
+                    $('#' + this.id + " .notconnected").removeClass("hidden");
+                }
+            });
+        },
+        /**
+         * Attach all events to the install div to enable everything to work.
+         */
+        setupInstall: function() {
+            $('#' + this.id + " . btn-install").click(this.installCamServer.bind(this));
+        },
+        /**
+         * Install Cam Server
+         */
+        installCamServer: function() {
+            // We need to send lots of commands to install the server
+            
+        },
+        sendExecRuntime: function() {
+            chilipeppr.publish("/com-chilipeppr-widget-serialport/ws/send", "execruntime");  
+        },
+        send: function(cmd) {
+            chilipeppr.publish("/com-chilipeppr-widget-serialport/ws/send", "exec " + cmd);  
+        },
+        isAreWeSubscribedToLowLevel: false,
+        subscribeToLowLevelSerial: function() {
+            // subscribe to websocket events
+            if (this.isAreWeSubscribedToLowLevel == false) {
+                chilipeppr.subscribe("/com-chilipeppr-widget-serialport/ws/recv", this, this.onWsRecv);
+            } else {
+                console.log("we were asked to subscribe to low-level /ws/recv but already were");
+            }
+        },
+        unsubscribeFromLowLevelSerial: function() {
+            // unsubscribe to websocket events
+            chilipeppr.unsubscribe("/com-chilipeppr-widget-serialport/ws/recv", this.onWsRecv);
+            this.isAreWeSubscribedToLowLevel = false;
+            
+        },
+        onWsRecv: function(msg) {
+            if (msg.match(/^\{/)) {
+                // it's json
+                var data = $.parseJSON(msg);
+                console.log("got json for onWsRecv. data:", data);
+                
+                if ('ExecStatus' in data) {
+                    this.appendLog(data.Output + "\n");      
+                    if (this.isInRaspiCheckMode) {
+                        this.checkIfRaspberryPiCallback(data);
+                    }
+                } else if ('ExecRuntimeStatus' in data) {
+                    this.onExecRuntimeStatus(data);
+                }
+            }
+        },
+        isInRaspiCheckMode: false,
+        raspiCapture: "",
+        isRaspberryPi: false,
+        checkCallback: null,
+        checkIfRaspberryPi: function(callback) {
+            this.checkCallback = callback;
+            this.isInRaspiCheckMode = true;
+            this.subscribeToLowLevelSerial();
+            // we potentially have a raspi candidate. send actual cmd line and parse that
+            this.send("cat /etc/os-release");
+            this.send('echo "done-with-cat-etc-release"');
+        },
+        checkIfRaspberryPiCallback: function(payload) {
+            // analyze what's coming back
+            if (payload.Output.match(/done-with-cat-etc-release/)) {
+                // we are done capturing
+                this.isInRaspiCheckMode = false;
+                console.log("done capturing");
+                //this.appendLog('We captured\n<span style="color:red">' + this.raspiCapture + '</span>');
+                
+                if (this.raspiCapture.match(/raspbian/i)) {
+                    // looks like we're on a raspi
+                    //this.appendLog("You are running SPJS on a Raspberry Pi.\n");
+                    this.showAsRaspi();
+                } else {
+                    // It's not raspi
+                    this.resetAsRaspi();
+                }
+                
+                this.raspiCapture = "";
+            } else {
+                this.raspiCapture += payload.Output;
+                
+            }
+        },
+        isInCheckLinuxMode: false,
+        checkIfLinux: function() {
+            // we can check if linux by asking for an execruntime status
+            // subscribe to low-level callback
+            this.isInCheckLinuxMode = true;
+            this.subscribeToLowLevelSerial();
+            this.sendExecRuntime();
+        },
+        execruntime: null,
+        onExecRuntimeStatus: function(json) {
+            console.log("got onExecRuntimeStatus. json:", json);
+            //this.appendLog(JSON.stringify(json) + "\n");
+            
+            if (json.OS.match(/linux/i) && json.Arch.match(/arm/i)) {
+                this.execruntime = json;
+                this.checkIfRaspberryPi();
+                //setTimeout(this.askForPwd.bind(this), 1000);
+            }
+        },
+        isSpjsStatusInitted: false,
+        statusCallback: null,
+        checkIfSpjsConnected: function(callback) {
+            this.statusCallback = callback;
+            this.requestSpjsStatus();
+        },
+        requestSpjsStatus: function() {
+            // we need to ask spjs to get a version back
+            if (this.isSpjsStatusInitted == false) {
+                chilipeppr.subscribe("/com-chilipeppr-widget-serialport/recvStatus", this, this.onRequestSpjsStatusCallback);
+                this.isSpjsStatusInitted = true;
+            }
+            
+            // wait about 2 seconds just to wait a bit for connecting
+            setTimeout(function() {
+                chilipeppr.publish("/com-chilipeppr-widget-serialport/requestStatus");
+            }, 1000);
+            
+        },
+        onRequestSpjsStatusCallback: function(payload) {
+            chilipeppr.unsubscribe("/com-chilipeppr-widget-serialport/recvStatus", this.onRequestSpjsStatusCallback);
+            this.isSpjsStatusInitted = false;
+            this.statusCallback(payload);
+        },
+
+
         signalling_server_hostname : "localhost", //location.hostname || "192.168.1.16",
         signalling_server_address : this.signalling_server_hostname + ':' + 443, //(location.port || 80),
         isFirefox : typeof InstallTrigger !== 'undefined', // Firefox 1.0+
@@ -332,6 +556,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             var remoteVideoElement = document.getElementById('remote-video');
             remoteVideoElement.src = this.URL.createObjectURL(event.stream);
             remoteVideoElement.play();
+            console.log("stream:", event.stream, event);
         },
 
         onRemoteStreamRemoved: function(event) {
@@ -349,8 +574,9 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 $('#com-chilipeppr-widget-cam .btn-stopstreaming').prop('disabled', false);
                 $('#com-chilipeppr-widget-cam .btn-startstreaming').prop('disabled', true);
                 document.documentElement.style.cursor ='wait';
-                this.server = document.getElementById("signalling_server").value.toLowerCase();
-
+                //this.server = document.getElementById("signalling_server").value.toLowerCase();
+                this.server = $('#' + this.id + ' #signalling_server').val().toLowerCase();
+                
                 var protocol = location.protocol === "https:" ? "wss:" : "ws:";
                 // for now force to ssl
                 protocol = "wss:";
@@ -819,12 +1045,38 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             <input class="hidden" type="text" id="ice_servers" value="" 
             title="array of RTCIceServer objects as valid JSON string"/>
             
-            <div class="overlayWrapper">
+            <div class="overlayWrapper hidden">
                 <video id="remote-video" autoplay="" width="100%" xwidth="640" xheight="480">
                     Your browser does not support the video tag.
                 </video>
                 <div class="cam-line-horiz"></div>
                 <div class="cam-line-vert"></div>
+            </div>
+            
+            <div class="well notconnected hidden">
+                You are not connected to a Serial Port JSON Server. Please connect 
+                and then retry.
+            </div>
+            
+            <div class="well cantuse hidden">
+                Your SPJS is not running on a Raspberry Pi, therefore you can't 
+                use this widget.
+            </div>
+
+            <div class="well cantuse">
+                <p>Your SPJS is running on a Raspberry Pi so you are eligible to use 
+                this widget. You must click the install button to have this widget 
+                configure your Raspberry Pi automatically.</p>
+                
+                <button class="btn btn-default btn-install">Install Cam Server</button>
+                
+                <pre class="terminal">/home/pi
+                asdf
+                asdf
+                asdf
+                asdf
+                asdf
+                asdf</pre>
             </div>
 
         </div>

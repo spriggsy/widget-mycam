@@ -101,6 +101,32 @@ The table below shows, in order, the methods and properties inside the widget/el
 | foreignPublish | object | Please see docs above.<br><br>Document the foreign publish signals, i.e. signals owned by other widgetsor elements, that this widget/element publishes to. |
 | foreignSubscribe | object | Please see docs above.<br><br>Document the foreign subscribe signals, i.e. signals owned by other widgetsor elements, that this widget/element subscribes to. |
 | init | function | function () <br><br>All widgets should have an init method. It should be run by theinstantiating code like a workspace or a different widget. |
+| activate | function | function () <br><br>When this widget is activated |
+| deactivate | function | function () <br><br>When this widget is deactivated |
+| initCheckForCam | function | function () <br><br>When this widget is activated, we need to do a few things:1. Check if there is a stored setting of what cam to connect tobecause this could be a different host than what SPJS is runningon.If no setting:1. Check if we are SPJS connected2. Check if we are on a Raspberry Pi3. If so, then see if uv4l is installed4. If so, then launch it5. ConnectIf not Raspi, show error.If no uv4l, go into install process. |
+| setupInstall | function | function () <br><br>Attach all events to the install div to enable everything to work. |
+| installCamServer | function | function () <br><br>Install Cam Server |
+| sendExecRuntime | function | function ()  |
+| send | function | function (cmd)  |
+| isAreWeSubscribedToLowLevel | boolean |  |
+| subscribeToLowLevelSerial | function | function ()  |
+| unsubscribeFromLowLevelSerial | function | function ()  |
+| onWsRecv | function | function (msg)  |
+| isInRaspiCheckMode | boolean |  |
+| raspiCapture | string |  |
+| isRaspberryPi | boolean |  |
+| checkCallback | object |  |
+| checkIfRaspberryPi | function | function (callback)  |
+| checkIfRaspberryPiCallback | function | function (payload)  |
+| isInCheckLinuxMode | boolean |  |
+| checkIfLinux | function | function ()  |
+| execruntime | object |  |
+| onExecRuntimeStatus | function | function (json)  |
+| isSpjsStatusInitted | boolean |  |
+| statusCallback | object |  |
+| checkIfSpjsConnected | function | function (callback)  |
+| requestSpjsStatus | function | function ()  |
+| onRequestSpjsStatusCallback | function | function (payload)  |
 | signalling_server_hostname | string | "localhost" |
 | signalling_server_address | string | "undefined:443" |
 | isFirefox | boolean |  |
