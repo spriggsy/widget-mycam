@@ -149,6 +149,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             this.forkSetup();
             
             //this.initCam();
+            setTimeout(this.initCheckForCam.bind(this), 2000);
             
             //this.subscribeToLowLevelSerial();
 
@@ -158,7 +159,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
          * When this widget is activated
          */
         activate: function() {
-            this.versionWarning();
+            this.initCheckForCam();
         },
         /**
          * When this widget is deactivated
@@ -186,7 +187,10 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             // else just try to see if spjs host is raspi, and has cam
             this.checkIfSpjsConnected(function(results) {
                 if (results.connected) {
+                    
                     // great, we're connected, lets' do next step
+                    $('#' + this.id + " .notconnected").addClass("hidden");
+                    
                     // check if we are on linux
                     this.checkIfLinux(function(status) {
                         if (status.isLinux) {
