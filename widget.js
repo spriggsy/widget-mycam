@@ -149,7 +149,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             this.forkSetup();
             
             //this.initCam();
-            //setTimeout(this.initCheckForCam.bind(this), 2000);
+            setTimeout(this.initCheckForCam.bind(this), 2000);
             
             this.setupPubSubForSpjsConnect();
             //this.subscribeToLowLevelSerial();
@@ -181,57 +181,81 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
          * If not Raspi, show error.
          * If no uv4l, go into install process.
          */
+        isRunningInitCheckForCam: false,
         initCheckForCam: function() {
             
             // check settings and see if there is a stored ip addr to connect to
             console.log("initting check for cam");
             
+            if (this.isRunningInitCheckForCam) {
+                console.warn("we are currently running initCheckForCam. Exiting.");
+                return;
+            }
+            
+            this.isRunningInitCheckForCam = true;
+            
             // lets ensure all our install msg divs are hidden
             $('#' + this.id + " .install-msg").addClass("hidden");
+            
+            //debugger;
+            
+            var that = this;
             
             // else just try to see if spjs host is raspi, and has cam
             this.checkIfSpjsConnected(function(results) {
                 if (results.connected) {
                     
                     // great, we're connected, lets' do next step
-                    $('#' + this.id + " .notconnected").addClass("hidden");
+                    $('#' + that.id + " .notconnected").addClass("hidden");
                     
                     // check if we are on linux
-                    this.checkIfLinux(function(status) {
+                    that.checkIfLinux(function(status) {
+                        
+                        console.log("got callback from checking if linux. status:", status);
                         
                         if (status.OS.match(/linux/i)) {
                             
                             if (status.Arch.match(/arm/i)) {
                                 
-                                this.checkIfRaspberryPi(function(status) {
+                                that.checkIfRaspberryPi(function(status) {
+                                    
                                     // when we get here, we get back a status to determine
                                     // if we're on a raspi or not
+                                    console.log("we got back from checkIfRaspberryPi. status:", status);
+                                    
                                     if (status.isRaspberryPi) {
                                 
                                         // awesome. we are raspi. we can install
-                                        $('#' + this.id + " .install").removeClass("hidden");
+                                        $('#' + that.id + " .eligible").removeClass("hidden");
+                                        that.isRunningInitCheckForCam = false;
                                         
                                     } else {
                                         console.log("at least is linux. show error");
-                                        $('#' + this.id + " .linux").removeClass("hidden");
+                                        $('#' + that.id + " .linux").removeClass("hidden");
+                                        that.isRunningInitCheckForCam = false;
                                     }
                                 
                                 });
                                 
                             } else {
                                 console.log("at least is linux. show error");
-                                $('#' + this.id + " .linux").removeClass("hidden");
+                                $('#' + that.id + " .linux").removeClass("hidden");
+                                that.isRunningInitCheckForCam = false;
                             }
                             
                         } else {
                             console.log("We are not Linux, so giving up. Show error"); 
-                            $('#' + this.id + " .bados").removeClass("hidden");
+                            var os = status.OS.charAt(0).toUpperCase() + status.OS.slice(1);
+                            $('#' + that.id + " .bados .os").text(os);
+                            $('#' + that.id + " .bados").removeClass("hidden");
+                            that.isRunningInitCheckForCam = false;
                         }
                     });
                     
                 } else {
                     // not connected, show error
-                    $('#' + this.id + " .notconnected").removeClass("hidden");
+                    $('#' + that.id + " .notconnected").removeClass("hidden");
+                    that.isRunningInitCheckForCam = false;
                 }
             });
         },
@@ -291,7 +315,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 console.log("got json for onWsRecv. data:", data);
                 
                 if ('ExecStatus' in data) {
-                    this.appendLog(data.Output + "\n");      
+                    //this.appendLog(data.Output + "\n");      
                     if (this.isInRaspiCheckMode) {
                         this.checkIfRaspberryPiCallback(data);
                     }
@@ -309,9 +333,11 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             this.isInRaspiCheckMode = true;
             this.subscribeToLowLevelSerial();
             // we potentially have a raspi candidate. send actual cmd line and parse that
-            this.send('cat /etc/os-release; echo "done-with-cat-etc-release"');
+            this.send('cat /etc/os-release');
+            this.send('echo "done-with-cat-etc-release"');
         },
         checkIfRaspberryPiCallback: function(payload) {
+            
             // analyze what's coming back
             if (payload.Output.match(/done-with-cat-etc-release/)) {
                 // we are done capturing
@@ -361,10 +387,12 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             
             this.execruntime = json;
             
-            if (this.checkLinuxCallback) this.checkLinuxCallback(json);
             this.unsubscribeFromLowLevelSerial();
-            this.checkLinuxCallback = null;
+            
             this.isInCheckLinuxMode = false;
+
+            if (this.checkLinuxCallback) this.checkLinuxCallback(json);
+            this.checkLinuxCallback = null;
             
             /*
             if (json.OS.match(/linux/i) && json.Arch.match(/arm/i)) {
@@ -823,28 +851,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 container: 'body'
             });
 
-            // Init Say Hello Button on Main Toolbar
-            // We are inlining an anonymous method as the callback here
-            // as opposed to a full callback method in the Hello Word 2
-            // example further below. Notice we have to use "that" so 
-            // that the this is set correctly inside the anonymous method
-            $('#' + this.id + ' .btn-sayhello').click(function() {
-                console.log("saying hello");
-                // Make sure popover is immediately hidden
-                $('#' + that.id + ' .btn-sayhello').popover("hide");
-                // Show a flash msg
-                chilipeppr.publish(
-                    "/com-chilipeppr-elem-flashmsg/flashmsg",
-                    "Hello Title",
-                    "Hello World from widget " + that.id,
-                    1000
-                );
-            });
-
-            // Init Hello World 2 button on Tab 1. Notice the use
-            // of the slick .bind(this) technique to correctly set "this"
-            // when the callback is called
-            $('#' + this.id + ' .btn-helloworld2').click(this.onHelloBtnClick.bind(this));
+            
 
         },
         /**
