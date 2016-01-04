@@ -82,9 +82,21 @@
                 and then retry.
             </div>
             
-            <div class="well cantuse hidden">
-                Your SPJS is not running on a Raspberry Pi, therefore you can't 
-                use this widget.
+            <div class="well bados hidden">
+                Your SPJS appears to be running a <span class="os"></span> host. 
+                If you are not running on Linux or a Raspberry Pi you can't 
+                use this widget. We use uv4l as the WebRTC server and it is only
+                available for Linux. Feel free to fork this widget to add 
+                <span class="os"></span> capability.
+            </div>
+            
+            <div class="well linux hidden">
+                Your SPJS is running on Linux so you can use this widget with 
+                the uv4l WebRTC server, but we don't have that install script 
+                setup yet. If you are interested in forking this widget and 
+                mimicking the Raspberry Pi setup please feel free and then push 
+                the changes to Github http://github.com/chilipeppr/widget-cam 
+                repository.
             </div>
 
             <div class="well eligible hidden">

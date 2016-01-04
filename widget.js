@@ -149,8 +149,9 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             this.forkSetup();
             
             //this.initCam();
-            setTimeout(this.initCheckForCam.bind(this), 2000);
+            //setTimeout(this.initCheckForCam.bind(this), 2000);
             
+            this.setupPubSubForSpjsConnect();
             //this.subscribeToLowLevelSerial();
 
             console.log("I am done being initted.");
@@ -183,6 +184,10 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
         initCheckForCam: function() {
             
             // check settings and see if there is a stored ip addr to connect to
+            console.log("initting check for cam");
+            
+            // lets ensure all our install msg divs are hidden
+            $('#' + this.id + " .install-msg").addClass("hidden");
             
             // else just try to see if spjs host is raspi, and has cam
             this.checkIfSpjsConnected(function(results) {
@@ -193,22 +198,34 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                     
                     // check if we are on linux
                     this.checkIfLinux(function(status) {
-                        if (status.isLinux) {
+                        
+                        if (status.OS.match(/linux/i)) {
                             
-                            this.checkIfRaspberryPi(function(status) {
-                                // when we get here, we get back a status to determine
-                                // if we're on a raspi or not
-                                if (status.isRaspberryPi) {
-                                    
-                                    // awesome. we are raspi. we can install
-                                } else {
-                                    console.log("not raspi. cannot install. show error");
-                                }
+                            if (status.Arch.match(/arm/i)) {
                                 
-                            });
+                                this.checkIfRaspberryPi(function(status) {
+                                    // when we get here, we get back a status to determine
+                                    // if we're on a raspi or not
+                                    if (status.isRaspberryPi) {
+                                
+                                        // awesome. we are raspi. we can install
+                                        $('#' + this.id + " .install").removeClass("hidden");
+                                        
+                                    } else {
+                                        console.log("at least is linux. show error");
+                                        $('#' + this.id + " .linux").removeClass("hidden");
+                                    }
+                                
+                                });
+                                
+                            } else {
+                                console.log("at least is linux. show error");
+                                $('#' + this.id + " .linux").removeClass("hidden");
+                            }
                             
                         } else {
-                            console.log("We are not Linux, so giving up. Show error");    
+                            console.log("We are not Linux, so giving up. Show error"); 
+                            $('#' + this.id + " .bados").removeClass("hidden");
                         }
                     });
                     
@@ -217,6 +234,21 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                     $('#' + this.id + " .notconnected").removeClass("hidden");
                 }
             });
+        },
+        /**
+         * Subscribe to connect/disconnect events for SPJS so we can pivot off
+         * of it for detection.
+         */
+        setupPubSubForSpjsConnect: function() {
+           chilipeppr.subscribe('/com-chilipeppr-widget-serialport/ws/onconnect', this, this.onSpjsConnect); 
+           chilipeppr.subscribe('/com-chilipeppr-widget-serialport/ws/ondisconnect', this, this.onSpjsDisconnect); 
+        },
+        onSpjsConnect: function() {
+            // check for cam 1 sec later
+            setTimeout(this.initCheckForCam.bind(this), 1000);
+        },
+        onSpjsDisconnect: function() {
+            this.initCheckForCam();
         },
         /**
          * Attach all events to the install div to enable everything to work.
@@ -271,31 +303,40 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
         isInRaspiCheckMode: false,
         raspiCapture: "",
         isRaspberryPi: false,
-        checkCallback: null,
+        checkRaspiUserCallback: null,
         checkIfRaspberryPi: function(callback) {
-            this.checkCallback = callback;
+            this.checkRaspiUserCallback = callback;
             this.isInRaspiCheckMode = true;
             this.subscribeToLowLevelSerial();
             // we potentially have a raspi candidate. send actual cmd line and parse that
-            this.send("cat /etc/os-release");
-            this.send('echo "done-with-cat-etc-release"');
+            this.send('cat /etc/os-release; echo "done-with-cat-etc-release"');
         },
         checkIfRaspberryPiCallback: function(payload) {
             // analyze what's coming back
             if (payload.Output.match(/done-with-cat-etc-release/)) {
                 // we are done capturing
                 this.isInRaspiCheckMode = false;
+                this.unsubscribeFromLowLevelSerial();
+                
                 console.log("done capturing");
                 //this.appendLog('We captured\n<span style="color:red">' + this.raspiCapture + '</span>');
+                
+                var status = {
+                    isRaspberryPi: false
+                };
                 
                 if (this.raspiCapture.match(/raspbian/i)) {
                     // looks like we're on a raspi
                     //this.appendLog("You are running SPJS on a Raspberry Pi.\n");
-                    this.showAsRaspi();
+                    //this.showAsRaspi();
+                    status.isRaspberryPi = true;
                 } else {
                     // It's not raspi
-                    this.resetAsRaspi();
+                    //this.resetAsRaspi();
+                    
                 }
+                
+                if (this.checkRaspiUserCallback) this.checkRaspiUserCallback(status);
                 
                 this.raspiCapture = "";
             } else {
@@ -304,9 +345,11 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             }
         },
         isInCheckLinuxMode: false,
-        checkIfLinux: function() {
+        checkLinuxCallback: null,
+        checkIfLinux: function(callback) {
             // we can check if linux by asking for an execruntime status
             // subscribe to low-level callback
+            this.checkLinuxCallback = callback;
             this.isInCheckLinuxMode = true;
             this.subscribeToLowLevelSerial();
             this.sendExecRuntime();
@@ -316,11 +359,20 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             console.log("got onExecRuntimeStatus. json:", json);
             //this.appendLog(JSON.stringify(json) + "\n");
             
+            this.execruntime = json;
+            
+            if (this.checkLinuxCallback) this.checkLinuxCallback(json);
+            this.unsubscribeFromLowLevelSerial();
+            this.checkLinuxCallback = null;
+            this.isInCheckLinuxMode = false;
+            
+            /*
             if (json.OS.match(/linux/i) && json.Arch.match(/arm/i)) {
                 this.execruntime = json;
-                this.checkIfRaspberryPi();
+                //this.checkIfRaspberryPi();
                 //setTimeout(this.askForPwd.bind(this), 1000);
             }
+            */
         },
         isSpjsStatusInitted: false,
         statusCallback: null,
@@ -794,18 +846,6 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             // when the callback is called
             $('#' + this.id + ' .btn-helloworld2').click(this.onHelloBtnClick.bind(this));
 
-        },
-        /**
-         * onHelloBtnClick is an example of a button click event callback
-         */
-        onHelloBtnClick: function(evt) {
-            console.log("saying hello 2 from btn in tab 1");
-            chilipeppr.publish(
-                '/com-chilipeppr-elem-flashmsg/flashmsg',
-                "Hello 2 Title",
-                "Hello World 2 from Tab 1 from widget " + this.id,
-                2000 /* show for 2 second */
-            );
         },
         /**
          * User options are available in this property for reference by your
