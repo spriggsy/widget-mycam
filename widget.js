@@ -168,6 +168,11 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
         deactivate: function() {
             
         },
+        
+        // ---------------
+        // Cam check/install region
+        // ---------------
+        
         /** When this widget is activated, we need to do a few things:
          * 1. Check if there is a stored setting of what cam to connect to
          *    because this could be a different host than what SPJS is running
@@ -426,6 +431,19 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             this.isSpjsStatusInitted = false;
             this.statusCallback(payload);
         },
+        /**
+         * We actually do the install here
+         */
+        installUv4lOnRaspi: function() {
+            var cmds = [
+                ''
+            ]
+        },
+        
+        // ---------------
+        // End Cam check/install region
+        // ---------------
+        
 
 
         signalling_server_hostname : "localhost", //location.hostname || "192.168.1.16",
