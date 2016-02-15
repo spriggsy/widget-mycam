@@ -57,6 +57,8 @@ cprequire_test(["inline:com-chilipeppr-widget-cam"], function(myWidget) {
         }
     );
 
+    /* deactivate cuz of mixed ssl and non ssl content
+
     // load spjs widget so we can test
     //http://fiddle.jshell.net/chilipeppr/vetj5fvx/show/light/
     $('body').append('<div id="testDivForSpjsWidget"></div>');
@@ -79,9 +81,10 @@ cprequire_test(["inline:com-chilipeppr-widget-cam"], function(myWidget) {
             });
         }
     );
+    */
     
     $('title').html(myWidget.name);
-    
+    myWidget.init();
 } /*end_test*/ );
 
 // This is the main definition of your widget. Give it a unique name.
@@ -869,8 +872,26 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 container: 'body'
             });
 
+            $('#' + that.id + ' .btn-preferences').click(
+                this.showOptionsModal.bind(this)
+            );
             
-
+            // options
+            var el = $('#' + that.id);
+            el.find('.mjpeg-url').change(function(evt) {
+                console.log("evt:", evt);
+                that.options.mjpegurl = evt.currentTarget.value;
+                el.find('.mjpeg-image').attr("src", that.options.mjpegurl);
+                console.log("options:", that.options);
+                that.saveOptionsLocalStorage();
+            });
+            if(that.options.mjpegurl !== undefined){
+                el.find('.mjpeg-image').attr("src", that.options.mjpegurl);
+                el.find('.mjpeg-url').val(that.options.mjpegurl);
+            }
+        },
+        showOptionsModal: function() {
+            $('#' + this.id + ' .preferences-window').modal('show');
         },
         /**
          * User options are available in this property for reference by your
@@ -894,7 +915,6 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             // object for your own items
 
             var options = localStorage.getItem(this.id + '-options');
-
             if (options) {
                 options = $.parseJSON(options);
                 console.log("just evaled options: ", options);
@@ -948,6 +968,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             $('#' + this.id + ' .panel-footer').removeClass('hidden');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
+            $('#' + this.id + ' .overlayWrapper').removeClass('hidden');
             if (!(evt == null)) {
                 this.options.showBody = true;
                 this.saveOptionsLocalStorage();
@@ -966,6 +987,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             $('#' + this.id + ' .panel-footer').addClass('hidden');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-down');
+            $('#' + this.id + ' .overlayWrapper').addClass('hidden');
             if (!(evt == null)) {
                 this.options.showBody = false;
                 this.saveOptionsLocalStorage();
