@@ -941,6 +941,8 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             
             // options
             var el = $('#' + that.id);
+            
+            // Save parameter in localspace if user change
             el.find('.mjpeg-url').change(function(evt) {
                 console.log("evt:", evt);
                 that.options.mjpegurl = evt.currentTarget.value;
@@ -948,9 +950,25 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 console.log("options:", that.options);
                 that.saveOptionsLocalStorage();
             });
+            el.find('.CAMXoffset').change(function(evt) {
+                that.options.camxoffset = evt.currentTarget.value;
+                that.saveOptionsLocalStorage();
+            });
+            el.find('.CAMYoffset').change(function(evt) {
+                that.options.camyoffset = evt.currentTarget.value;
+                that.saveOptionsLocalStorage();
+            });
+
+            // use all parameters from localspace
             if(that.options.mjpegurl !== undefined){
                 el.find('.mjpeg-image').attr("src", that.options.mjpegurl);
                 el.find('.mjpeg-url').val(that.options.mjpegurl);
+            }
+            if(that.options.camxoffset !== undefined){
+                el.find('.CAMXoffset').val(that.options.camxoffset);
+            }
+            if(that.options.camyoffset !== undefined){
+                el.find('.CAMYoffset').val(that.options.camyoffset);
             }
         },
         showOptionsModal: function() {
@@ -1200,21 +1218,20 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
-                        <p>The Camera widget will get a "motion" MJPEG Stream from your url. Please install motion and input the complete url to the MJPEG Stream.</p>
 
-                        <div class="input-group" style="width:200px;">
+                        <p>The Camera widget will get a "motion" MJPEG Stream from your url. Please install motion on a linux machine or raspberry and input the complete url to the MJPEG Stream. The offset describe the distance between spindle center and camera center.</p>
+                        <div class="input-group" style="width:100%;">
+                            <div class="input-group-addon" style="width:200px;">MJPEG URL:</div>
                             <input type="string" class="form-control mjpeg-url" placeholder="url for mjpeg stream" value="http://127.0.0.1:9081" />
-                            <div class="input-group-addon">url</div>
                         </div>
 
-                        Camera Offset for X and Y-Axis
                         <div class="input-group">
-                            <div class="input-group-addon">X:</div>
+                            <div class="input-group-addon" style="width:200px;">X Offset:</div>
                             <input class="form-control CAMXoffset" type="number" placeholder="Offsets" value="0" xdisabled />
                             <div class="input-group-addon">mm</div>
                         </div>
                         <div class="input-group">
-                            <div class="input-group-addon">Y:</div>
+                            <div class="input-group-addon" style="width:200px;">Y Offset:</div>
                             <input class="form-control CAMYoffset" type="number" placeholder="Offsets" value="0" xdisabled />
                             <div class="input-group-addon">mm</div>
                         </div>
