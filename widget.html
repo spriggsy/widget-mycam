@@ -133,21 +133,20 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
-                        <p>The Camera widget will get a "motion" MJPEG Stream from your url. Please install motion and input the complete url to the MJPEG Stream.</p>
 
-                        <div class="input-group" style="width:200px;">
+                        <p>The Camera widget will get a "motion" MJPEG Stream from your url. Please install motion on a linux machine or raspberry and input the complete url to the MJPEG Stream. The offset describe the distance between spindle center and camera center.</p>
+                        <div class="input-group" style="width:100%;">
+                            <div class="input-group-addon" style="width:200px;">MJPEG URL:</div>
                             <input type="string" class="form-control mjpeg-url" placeholder="url for mjpeg stream" value="http://127.0.0.1:9081" />
-                            <div class="input-group-addon">url</div>
                         </div>
 
-                        Camera Offset for X and Y-Axis
                         <div class="input-group">
-                            <div class="input-group-addon">X:</div>
+                            <div class="input-group-addon" style="width:200px;">X Offset:</div>
                             <input class="form-control CAMXoffset" type="number" placeholder="Offsets" value="0" xdisabled />
                             <div class="input-group-addon">mm</div>
                         </div>
                         <div class="input-group">
-                            <div class="input-group-addon">Y:</div>
+                            <div class="input-group-addon" style="width:200px;">Y Offset:</div>
                             <input class="form-control CAMYoffset" type="number" placeholder="Offsets" value="0" xdisabled />
                             <div class="input-group-addon">mm</div>
                         </div>
