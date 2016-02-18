@@ -878,6 +878,8 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             
             // options
             var el = $('#' + that.id);
+            
+            // Save parameter in localspace if user change
             el.find('.mjpeg-url').change(function(evt) {
                 console.log("evt:", evt);
                 that.options.mjpegurl = evt.currentTarget.value;
@@ -885,9 +887,25 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 console.log("options:", that.options);
                 that.saveOptionsLocalStorage();
             });
+            el.find('.CAMXoffset').change(function(evt) {
+                that.options.camxoffset = evt.currentTarget.value;
+                that.saveOptionsLocalStorage();
+            });
+            el.find('.CAMYoffset').change(function(evt) {
+                that.options.camyoffset = evt.currentTarget.value;
+                that.saveOptionsLocalStorage();
+            });
+
+            // use all parameters from localspace
             if(that.options.mjpegurl !== undefined){
                 el.find('.mjpeg-image').attr("src", that.options.mjpegurl);
                 el.find('.mjpeg-url').val(that.options.mjpegurl);
+            }
+            if(that.options.camxoffset !== undefined){
+                el.find('.CAMXoffset').val(that.options.camxoffset);
+            }
+            if(that.options.camyoffset !== undefined){
+                el.find('.CAMYoffset').val(that.options.camyoffset);
             }
         },
         showOptionsModal: function() {
