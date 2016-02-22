@@ -513,22 +513,18 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             this.RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
             this.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate
             this.URL =  window.URL || window.webkitURL
-
-            // bind button click events
-            $('#com-chilipeppr-widget-cam .btn-startstreaming').click(this.onBtnStartClick.bind(this));
-            $('#com-chilipeppr-widget-cam .btn-stopstreaming').click(this.onBtnStopClick.bind(this));
-            this.start();
-
         },
         onBtnStartClick: function(evt) {
             // hide popover
             $('#' + this.id + " .btn-startstreaming").popover('hide');
-            this.start();
+            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl);
+            //this.start();
         },
         onBtnStopClick: function(evt) {
             // hide popover
+            $('#' + this.id).find('.mjpeg-image').attr("src", 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
             $('#' + this.id + " .btn-stopstreaming").popover('hide');
-            this.stop();
+            //this.stop();
         },
         ws: null,
         pc: null, 
@@ -791,6 +787,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             }
             //document.getElementById('remote-video').src = '';
             $(this.id + " .remote-video").src = '';
+            
             //document.getElementById('local-video').src = '';
             if (this.pc) {
                 this.pc.close();
@@ -847,6 +844,11 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
          * the entire DOM of the widget.
          */
         btnSetup: function() {
+
+            // bind button click events
+            $('#com-chilipeppr-widget-cam .btn-startstreaming').click(this.onBtnStartClick.bind(this));
+            $('#com-chilipeppr-widget-cam .btn-stopstreaming').click(this.onBtnStopClick.bind(this));
+            // this.start(); // webrtc
 
             // Chevron hide/show body
             var that = this;
