@@ -58,7 +58,7 @@
   transition: all 0.3s;
 }
 #com-chilipeppr-widget-cam .overlayWrapper:hover img {
-  -moz-transform: scale(2);
-  -webkit-transform: scale(2);
-  transform: scale(2);
+  -moz-transform: scale(4);
+  -webkit-transform: scale(4);
+  transform: scale(4);
 }
