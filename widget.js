@@ -918,6 +918,48 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 el.find('.ZOOMfac').val(that.options.zoomfac);
                 // TODO: replace css hover with jquery hover and use zoomfac
             }
+
+            that.cnt = 0;
+            el.find('.mjpeg-image').click(function(e){
+               var parentOffset = $(this).parent().offset(); 
+               //or $(this).offset(); if you really just want the current element's offset
+               var relX = e.pageX - parentOffset.left;
+               var relY = e.pageY - parentOffset.top;
+               var direction = {x:0,y:0,xminus:false,yminus:false};
+               // Calculate percent
+               direction.x = (relX / $(this).parent().width()) * 100;
+               if(direction.x < 50){
+                  direction.x = 50 - direction.x;
+                  direction.xminus = true;
+               } 
+               direction.y = (relY / $(this).parent().height()) * 100;
+               if(direction.y < 50){
+                  direction.y = 50 - direction.y;
+                  direction.yminus = true;
+               } 
+
+console.log(direction);
+
+               var offset = 2; //mm for a 100% percent move
+
+               direction.xdistance = (offset*(direction.x/100));
+               if(!direction.xminus)
+                  direction.xdistance -= (offset/2);
+
+               direction.ydistance = (offset*(direction.y/100));
+               if(! direction.yminus)
+                  direction.ydistance -= (offset/2);
+
+               chilipeppr.publish("/com-chilipeppr-widget-serialport/jsonSend", {
+                    D: 'G91 G1 F100' + 
+                        ' X'+ (direction.xminus ? '-' : '') + direction.xdistance +  
+                        ' Y'+ (direction.yminus ? '' : '-') + direction.ydistance +  
+                        '\nG90\n',
+                    Id: "CamMove" + that.cnt++
+               });
+            });
+
+
         },
         showOptionsModal: function() {
             $('#' + this.id + ' .preferences-window').modal('show');
