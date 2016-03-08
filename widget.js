@@ -897,6 +897,11 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 that.options.camyoffset = evt.currentTarget.value;
                 that.saveOptionsLocalStorage();
             });
+            el.find('.ZOOMfac').change(function(evt) {
+                that.options.zoomfac = evt.currentTarget.value;
+                // TODO: replace css hover with jquery hover and use zoomfac
+                that.saveOptionsLocalStorage();
+            });
 
             // use all parameters from localspace
             if(that.options.mjpegurl !== undefined){
@@ -908,6 +913,10 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             }
             if(that.options.camyoffset !== undefined){
                 el.find('.CAMYoffset').val(that.options.camyoffset);
+            }
+            if(that.options.zoomfac !== undefined){
+                el.find('.ZOOMfac').val(that.options.zoomfac);
+                // TODO: replace css hover with jquery hover and use zoomfac
             }
         },
         showOptionsModal: function() {
@@ -989,6 +998,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
             $('#' + this.id + ' .overlayWrapper').removeClass('hidden');
+            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl);
             if (!(evt == null)) {
                 this.options.showBody = true;
                 this.saveOptionsLocalStorage();
@@ -1008,6 +1018,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-down');
             $('#' + this.id + ' .overlayWrapper').addClass('hidden');
+            $('#' + this.id).find('.mjpeg-image').attr("src", 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
             if (!(evt == null)) {
                 this.options.showBody = false;
                 this.saveOptionsLocalStorage();
