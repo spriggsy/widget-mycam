@@ -940,7 +940,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
 
 console.log(direction);
 
-               var offset = 2; //mm for a 100% percent move
+               var offset = 4; //mm for a 100% percent move
 
                direction.xdistance = (offset*(direction.x/100));
                if(!direction.xminus)
