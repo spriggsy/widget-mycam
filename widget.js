@@ -897,9 +897,9 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 that.options.camyoffset = evt.currentTarget.value;
                 that.saveOptionsLocalStorage();
             });
-            el.find('.ZOOMfac').change(function(evt) {
-                that.options.zoomfac = evt.currentTarget.value;
-                // TODO: replace css hover with jquery hover and use zoomfac
+            el.find('.ZOOMdistance').change(function(evt) {
+                that.options.ZOOMdistance = evt.currentTarget.value;
+                // TODO: replace css hover with jquery hover and use ZOOMdistance
                 that.saveOptionsLocalStorage();
             });
 
@@ -914,9 +914,9 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             if(that.options.camyoffset !== undefined){
                 el.find('.CAMYoffset').val(that.options.camyoffset);
             }
-            if(that.options.zoomfac !== undefined){
-                el.find('.ZOOMfac').val(that.options.zoomfac);
-                // TODO: replace css hover with jquery hover and use zoomfac
+            if(that.options.ZOOMdistance !== undefined){
+                el.find('.ZOOMdistance').val(that.options.ZOOMdistance);
+                // TODO: replace css hover with jquery hover and use ZOOMdistance
             }
 
             that.cnt = 0;
@@ -943,7 +943,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
 
 console.log(direction);
 
-               var offset = 4; //mm for a 100% percent move
+               var offset = that.options.ZOOMdistance; //mm for a 100% percent move
 
                direction.xdistance = (offset*(direction.x/100));
                if(!direction.xminus)
