@@ -982,9 +982,9 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 that.options.camyoffset = evt.currentTarget.value;
                 that.saveOptionsLocalStorage();
             });
-            el.find('.ZOOMfac').change(function(evt) {
-                that.options.zoomfac = evt.currentTarget.value;
-                // TODO: replace css hover with jquery hover and use zoomfac
+            el.find('.ZOOMdistance').change(function(evt) {
+                that.options.ZOOMdistance = evt.currentTarget.value;
+                // TODO: replace css hover with jquery hover and use ZOOMdistance
                 that.saveOptionsLocalStorage();
             });
 
@@ -999,9 +999,9 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             if(that.options.camyoffset !== undefined){
                 el.find('.CAMYoffset').val(that.options.camyoffset);
             }
-            if(that.options.zoomfac !== undefined){
-                el.find('.ZOOMfac').val(that.options.zoomfac);
-                // TODO: replace css hover with jquery hover and use zoomfac
+            if(that.options.ZOOMdistance !== undefined){
+                el.find('.ZOOMdistance').val(that.options.ZOOMdistance);
+                // TODO: replace css hover with jquery hover and use ZOOMdistance
             }
 
             that.cnt = 0;
@@ -1028,7 +1028,7 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
 
 console.log(direction);
 
-               var offset = 4; //mm for a 100% percent move
+               var offset = that.options.ZOOMdistance; //mm for a 100% percent move
 
                direction.xdistance = (offset*(direction.x/100));
                if(!direction.xminus)
@@ -1318,10 +1318,11 @@ console.log(direction);
                         <p class="descriptive-text">Offset of the Camera to the center of spindle.</p>
 
                         <div class="input-group">
-                            <div class="input-group-addon" style="width:200px;">Zoom factor:</div>
-                            <input class="form-control ZOOMfac" type="number" placeholder="Zoom factor i.e. 2 for double size" value="4" disabled />
+                            <div class="input-group-addon" style="width:200px;">Real distance width:</div>
+                            <input class="form-control ZOOMdistance" type="number" placeholder="Distance" value="4" xdisabled />
+                            <div class="input-group-addon">mm</div>
                         </div>
-                        <p class="descriptive-text">Zoom factor, if mouse hover the cam video.</p>
+                        <p class="descriptive-text">Real distance from left to right border in zoomed state, please measure the distance with a ruler watched across the camera in zoomed state.</p>
             
 
                     </form>
