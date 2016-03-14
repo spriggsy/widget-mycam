@@ -918,6 +918,8 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                 el.find('.ZOOMdistance').val(that.options.ZOOMdistance);
                 // TODO: replace css hover with jquery hover and use ZOOMdistance
             }
+            // Trigger a change at all input fields
+            el.find('input').trigger('change');
 
             that.cnt = 0;
             el.find('.mjpeg-image').click(function(e){
