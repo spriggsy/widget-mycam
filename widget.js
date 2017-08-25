@@ -517,19 +517,24 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
         onBtnStart1Click: function(evt) {
             // hide popover
             $('#' + this.id + " .btn-start1streaming").popover('hide');
-            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1);
+            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1 + '/?action=stream');
             //this.start();
         },
         onBtnStart2Click: function(evt) {
             // hide popover
             $('#' + this.id + " .btn-start2streaming").popover('hide');
-            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2);
+            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2 + '/?action=stream');
             //this.start();
         },
         onBtnStopClick: function(evt) {
             // hide popover
             $('#' + this.id).find('.mjpeg-image').attr("src", 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
             $('#' + this.id + " .btn-stopstreaming").popover('hide');
+            if ('#btn-start2streaming'){
+                $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2 + '/?action=snapshot');
+            } else {
+                $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1 + '/?action=snapshot');
+            }
             //this.stop();
         },
         ws: null,
@@ -895,14 +900,14 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             el.find('.mjpeg-url1').change(function(evt) {
                 console.log("evt:", evt);
                 that.options.mjpegurl1 = evt.currentTarget.value;
-                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl1);
+                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl1 + '/?action=stream');
                 console.log("options:", that.options);
                 that.saveOptionsLocalStorage();
             });
             el.find('.mjpeg-url2').change(function(evt) {
                 console.log("evt:", evt);
                 that.options.mjpegurl2 = evt.currentTarget.value;
-                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl2);
+                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl2 + '/?action=stream');
                 console.log("options:", that.options);
                 that.saveOptionsLocalStorage();
             });
@@ -924,11 +929,11 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
 
             // use all parameters from localspace
             if(that.options.mjpegurl1 !== undefined){
-                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl1);
+                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl1 + '/?action=stream');
                 el.find('.mjpeg-url1').val(that.options.mjpegurl1);
             }
             if(that.options.mjpegurl2 !== undefined){
-                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl2);
+                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl2 + '/?action=stream');
                 el.find('.mjpeg-url2').val(that.options.mjpegurl2);
             }
             /*
@@ -1070,7 +1075,11 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
             $('#' + this.id + ' .overlayWrapper').removeClass('hidden');
-            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1);
+            //if ('#btn-start2streaming'){
+            //    $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2 + '/?action=stream');
+            //} else {
+            //    $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1 + '/?action=stream');
+            //}
             /*
             if (!(evt == null)) {
                 this.options.showBody = true;
@@ -1092,7 +1101,7 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-down');
             $('#' + this.id + ' .overlayWrapper').addClass('hidden');
-            $('#' + this.id).find('.mjpeg-image').attr("src", 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
+            //$('#' + this.id).find('.mjpeg-image').attr("src", '/?action=snapshot');//'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
             if (!(evt == null)) {
                 this.options.showBody = false;
                 this.saveOptionsLocalStorage();

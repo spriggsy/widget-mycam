@@ -43,13 +43,13 @@
                     </button>
                     <button type="button" class="btn btn-xs btn-default btn-start1streaming" data-delay="1000" 
                         data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
-                        data-title="Start Streaming Spindle Camera" data-content="Start Spindle Camera feed from your server.">
-                        <span class="glyphicon glyphicon-ok-circle"></span>
+                        data-title="Start Spindle Camera" data-content="Start Spindle Camera feed from your server.">
+                        <span class="glyphicon glyphicon-ok-circle">1</span>
                     </button>
                     <button type="button" class="btn btn-xs btn-default btn-start2streaming" data-delay="1000" 
                         data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
-                        data-title="Start Streaming Accessories Camera" data-content="Start Accessories Camera feed from your server.">
-                        <span class="glyphicon glyphicon-ok-circle"></span>
+                        data-title="Start Accessories Camera" data-content="Start Accessories Camera feed from your server.">
+                        <span class="glyphicon glyphicon-ok-circle">2</span>
                     </button>
                     <button type="button" class="btn btn-xs btn-default btn-preferences" data-delay="1000" 
                         data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
@@ -78,7 +78,7 @@
             <input class="hidden" type="text" id="ice_servers" value="" 
                 title="array of RTCIceServer objects as valid JSON string"/>
             
-            <div class="overlayWrapper">
+            <div class="overlayWrapper hidden">
                 <img src="http://localhost:9081/" class="mjpeg-image" width="100%" xwidth="640" xheight="480">
                 <video id="remote-video" class="hidden" autoplay="" width="100%" xwidth="640" xheight="480">
                     Your browser does not support the video tag.
