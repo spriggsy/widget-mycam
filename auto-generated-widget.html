@@ -603,14 +603,14 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             // hide popover
             $('#' + this.id + " .btn-start1streaming").popover('hide');
             $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1);
-            $('.panel-title').value = 'myCam (Spindle Camera Selected)'
+            $('.panel-title').html = 'myCam (Spindle Camera Selected)'
             //this.start();
         },
         onBtnStart2Click: function(evt) {
             // hide popover
             $('#' + this.id + " .btn-start2streaming").popover('hide');
             $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2);
-            $('.panel-title').value = 'myCam (Accessories Camera Selected)'
+            $('.panel-title').html = 'myCam (Accessories Camera Selected)'
             //this.start();
         },
         onBtnStopClick: function(evt) {
@@ -1252,12 +1252,12 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                     </button>
                     <button type="button" class="btn btn-xs btn-default btn-start1streaming" data-delay="1000" 
                         data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
-                        data-title="Start Streaming Spindle Camera" data-content="Start streaming Spindle Camera feed from your server.">
+                        data-title="Start Streaming Spindle Camera" data-content="Start Spindle Camera feed from your server.">
                         <span class="glyphicon glyphicon-ok-circle"></span>
                     </button>
                     <button type="button" class="btn btn-xs btn-default btn-start2streaming" data-delay="1000" 
                         data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
-                        data-title="Start Streaming Accessories Camera" data-content="Start streaming Accessories Camera feed from your server.">
+                        data-title="Start Streaming Accessories Camera" data-content="Start Accessories Camera feed from your server.">
                         <span class="glyphicon glyphicon-ok-circle"></span>
                     </button>
                     <button type="button" class="btn btn-xs btn-default btn-preferences" data-delay="1000" 
