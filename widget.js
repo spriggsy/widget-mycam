@@ -528,11 +528,11 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
         },
         onBtnStopClick: function(evt) {
             // hide popover
-            $('#' + this.id).find('.mjpeg-image').attr("src", 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
+            //$('#' + this.id).find('.mjpeg-image').attr("src", 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
             $('#' + this.id + " .btn-stopstreaming").popover('hide');
-            if ('#btn-start2streaming'){
+            if ($('.mjpeg-image').attr('src') == this.options.mjpegurl2 + '/?action=stream'){
                 $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2 + '/?action=snapshot');
-            } else {
+            } else if ($('.mjpeg-image').attr('src') == this.options.mjpegurl1 + '/?action=stream'){
                 $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1 + '/?action=snapshot');
             }
             //this.stop();
