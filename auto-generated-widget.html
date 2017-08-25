@@ -1345,12 +1345,13 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                     <form class="form-horizontal" role="form">
                         <p>The Camera widget will get a MJPEG Stream from your urls. Please install <a href="https://github.com/jacksonliam/mjpg-streamer" target="new">mjpg_server</a> on a linux machine or raspberry and input the complete url to the MJPEG Stream. The offset describe the distance between spindle center and camera center.</p>
                         <div class="input-group" style="width:100%;">
-                            <div class="input-group-addon" style="width:200px;">Spindle Camera mjpg-stream URL:</div>
-                            <input type="string" class="form-control mjpeg-url" placeholder="url for Spindle stream" value="http://127.0.0.1:9081" />
+                            <div class="input-group-addon" style="width:200px;">Spindle Camera URL:</div>
+                            <input type="string" class="form-control mjpeg-url" placeholder="url for Camera stream" value="http://127.0.0.1:9081/?action=stream" />
                         </div>
+                        <p class="descriptive-text"></p>
                         <div class="input-group" style="width:100%;">
-                            <div class="input-group-addon" style="width:200px;">Accessories Camera mjpg-stream URL:</div>
-                            <input type="string" class="form-control mjpeg-url2" placeholder="url for Accessories stream" value="http://127.0.0.1:9082" />
+                            <div class="input-group-addon" style="width:200px;">Accessories Camera URL:</div>
+                            <input type="string" class="form-control mjpeg-url2" placeholder="url for Camera stream" value="http://127.0.0.1:9082/?action=stream" />
                         </div>
                         <!--
                         <div class="input-group">
