@@ -34,7 +34,7 @@ requirejs.config({
     }
 });
 
-cprequire_test(["inline:com-chilipeppr-widget-cam"], function(myWidget) {
+cprequire_test(["inline:com-chilipeppr-widget-mycam"], function(myWidget) {
 
     // Test this element. This code is auto-removed by the chilipeppr.load()
     // when using this widget in production. So use the cpquire_test to do things
@@ -88,12 +88,12 @@ cprequire_test(["inline:com-chilipeppr-widget-cam"], function(myWidget) {
 } /*end_test*/ );
 
 // This is the main definition of your widget. Give it a unique name.
-cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other dependencies here */ ], function() {
+cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dependencies here */ ], function() {
     return {
         /**
          * The ID of the widget. You must define this and make it unique.
          */
-        id: "com-chilipeppr-widget-cam", // Make the id the same as the cpdefine id
+        id: "com-chilipeppr-widget-mycam", // Make the id the same as the cpdefine id
         name: "Widget / Cam", // The descriptive name of your widget.
         desc: "This widget loads a webcam view in ChiliPeppr via WebRTC.", // A description of what your widget does
         url: "(auto fill by runme.js)",       // The final URL of the working widget as a single HTML file with CSS and Javascript inlined. You can let runme.js auto fill this if you are using Cloud9.
@@ -609,8 +609,8 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             if ("WebSocket" in window) {
                 //document.getElementById("stop").disabled = false;
                 //document.getElementById("start").disabled = true;
-                $('#com-chilipeppr-widget-cam .btn-stopstreaming').prop('disabled', false);
-                $('#com-chilipeppr-widget-cam .btn-startstreaming').prop('disabled', true);
+                $('#com-chilipeppr-widget-mycam .btn-stopstreaming').prop('disabled', false);
+                $('#com-chilipeppr-widget-mycam .btn-startstreaming').prop('disabled', true);
                 document.documentElement.style.cursor ='wait';
                 //this.server = document.getElementById("signalling_server").value.toLowerCase();
                 this.server = $('#' + this.id + ' #signalling_server').val().toLowerCase();
@@ -747,8 +747,8 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                     }
                     //document.getElementById("stop").disabled = true;
                     //document.getElementById("start").disabled = false;
-                    $('#com-chilipeppr-widget-cam .btn-stopstreaming').prop('disabled', true);
-                    $('#com-chilipeppr-widget-cam .btn-startstreaming').prop('disabled', false);
+                    $('#com-chilipeppr-widget-mycam .btn-stopstreaming').prop('disabled', true);
+                    $('#com-chilipeppr-widget-mycam .btn-startstreaming').prop('disabled', false);
 
                     document.documentElement.style.cursor ='default';
                 };
@@ -846,8 +846,8 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
         btnSetup: function() {
 
             // bind button click events
-            $('#com-chilipeppr-widget-cam .btn-startstreaming').click(this.onBtnStartClick.bind(this));
-            $('#com-chilipeppr-widget-cam .btn-stopstreaming').click(this.onBtnStopClick.bind(this));
+            $('#com-chilipeppr-widget-mycam .btn-startstreaming').click(this.onBtnStartClick.bind(this));
+            $('#com-chilipeppr-widget-mycam .btn-stopstreaming').click(this.onBtnStopClick.bind(this));
             // this.start(); // webrtc
 
             // Chevron hide/show body

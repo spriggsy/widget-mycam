@@ -1,4 +1,4 @@
-# com-chilipeppr-widget-cam
+# com-chilipeppr-widget-mycam
 This widget loads a webcam view in ChiliPeppr via WebRTC.
 
 ![alt text](screenshot.png "Screenshot")
@@ -11,13 +11,13 @@ not conflict with other ChiliPeppr widgets.
 
 | Item                  | Value           |
 | -------------         | ------------- | 
-| ID                    | com-chilipeppr-widget-cam |
+| ID                    | com-chilipeppr-widget-mycam |
 | Name                  | Widget / Cam |
 | Description           | This widget loads a webcam view in ChiliPeppr via WebRTC. |
-| chilipeppr.load() URL | http://raw.githubusercontent.com/xpix/widget-cam/master/auto-generated-widget.html |
-| Edit URL              | http://ide.c9.io/xpix/widget-cam |
-| Github URL            | http://github.com/xpix/widget-cam |
-| Test URL              | https://preview.c9users.io/xpix/widget-cam/widget.html |
+| chilipeppr.load() URL | http://raw.githubusercontent.com/floiolaf/widget-mycam/master/auto-generated-widget.html |
+| Edit URL              | http://ide.c9.io/floiolaf/widget-mycam |
+| Github URL            | http://github.com/floiolaf/widget-mycam |
+| Test URL              | https://preview.c9users.io/floiolaf/widget-mycam/widget.html |
 
 ## Example Code for chilipeppr.load() Statement
 
@@ -29,20 +29,20 @@ back the instance of it.
 
 ```javascript
 // Inject new div to contain widget or use an existing div with an ID
-$("body").append('<' + 'div id="myDivWidgetCam"><' + '/div>');
+$("body").append('<' + 'div id="myDivWidgetMycam"><' + '/div>');
 
 chilipeppr.load(
-  "#myDivWidgetCam",
-  "http://raw.githubusercontent.com/xpix/widget-cam/master/auto-generated-widget.html",
+  "#myDivWidgetMycam",
+  "http://raw.githubusercontent.com/floiolaf/widget-mycam/master/auto-generated-widget.html",
   function() {
-    // Callback after widget loaded into #myDivWidgetCam
+    // Callback after widget loaded into #myDivWidgetMycam
     // Now use require.js to get reference to instantiated widget
     cprequire(
-      ["inline:com-chilipeppr-widget-cam"], // the id you gave your widget
-      function(myObjWidgetCam) {
+      ["inline:com-chilipeppr-widget-mycam"], // the id you gave your widget
+      function(myObjWidgetMycam) {
         // Callback that is passed reference to the newly loaded widget
-        console.log("Widget / Cam just got loaded.", myObjWidgetCam);
-        myObjWidgetCam.init();
+        console.log("Widget / Cam just got loaded.", myObjWidgetMycam);
+        myObjWidgetMycam.init();
       }
     );
   }
@@ -132,7 +132,7 @@ The table below shows, in order, the methods and properties inside the widget/el
           </tr>
       </thead>
       <tbody>
-      <tr valign="top"><td>id</td><td>string</td><td>"com-chilipeppr-widget-cam"<br><br>The ID of the widget. You must define this and make it unique.</td></tr><tr valign="top"><td>name</td><td>string</td><td>"Widget / Cam"</td></tr><tr valign="top"><td>desc</td><td>string</td><td>"This widget loads a webcam view in ChiliPeppr via WebRTC."</td></tr><tr valign="top"><td>url</td><td>string</td><td>"http://raw.githubusercontent.com/xpix/widget-cam/master/auto-generated-widget.html"</td></tr><tr valign="top"><td>fiddleurl</td><td>string</td><td>"http://ide.c9.io/xpix/widget-cam"</td></tr><tr valign="top"><td>githuburl</td><td>string</td><td>"http://github.com/xpix/widget-cam"</td></tr><tr valign="top"><td>testurl</td><td>string</td><td>"http://widget-cam-xpix.c9users.io/widget.html"</td></tr><tr valign="top"><td>publish</td><td>object</td><td>Please see docs above.<br><br>Define the publish signals that this widget/element owns or defines so that
+      <tr valign="top"><td>id</td><td>string</td><td>"com-chilipeppr-widget-mycam"<br><br>The ID of the widget. You must define this and make it unique.</td></tr><tr valign="top"><td>name</td><td>string</td><td>"Widget / Cam"</td></tr><tr valign="top"><td>desc</td><td>string</td><td>"This widget loads a webcam view in ChiliPeppr via WebRTC."</td></tr><tr valign="top"><td>url</td><td>string</td><td>"http://raw.githubusercontent.com/floiolaf/widget-mycam/master/auto-generated-widget.html"</td></tr><tr valign="top"><td>fiddleurl</td><td>string</td><td>"http://ide.c9.io/floiolaf/widget-mycam"</td></tr><tr valign="top"><td>githuburl</td><td>string</td><td>"http://github.com/floiolaf/widget-mycam"</td></tr><tr valign="top"><td>testurl</td><td>string</td><td>"http://widget-mycam-floiolaf.c9users.io/widget.html"</td></tr><tr valign="top"><td>publish</td><td>object</td><td>Please see docs above.<br><br>Define the publish signals that this widget/element owns or defines so that
 other widgets know how to subscribe to them and what they do.</td></tr><tr valign="top"><td>subscribe</td><td>object</td><td>Please see docs above.<br><br>Define the subscribe signals that this widget/element owns or defines so that
 other widgets know how to subscribe to them and what they do.</td></tr><tr valign="top"><td>foreignPublish</td><td>object</td><td>Please see docs above.<br><br>Document the foreign publish signals, i.e. signals owned by other widgets
 or elements, that this widget/element publishes to.</td></tr><tr valign="top"><td>foreignSubscribe</td><td>object</td><td>Please see docs above.<br><br>Document the foreign subscribe signals, i.e. signals owned by other widgets

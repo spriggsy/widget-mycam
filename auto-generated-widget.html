@@ -119,7 +119,7 @@ requirejs.config({
     }
 });
 
-cprequire_test(["inline:com-chilipeppr-widget-cam"], function(myWidget) {
+cprequire_test(["inline:com-chilipeppr-widget-mycam"], function(myWidget) {
 
     // Test this element. This code is auto-removed by the chilipeppr.load()
     // when using this widget in production. So use the cpquire_test to do things
@@ -173,18 +173,18 @@ cprequire_test(["inline:com-chilipeppr-widget-cam"], function(myWidget) {
 } /*end_test*/ );
 
 // This is the main definition of your widget. Give it a unique name.
-cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other dependencies here */ ], function() {
+cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dependencies here */ ], function() {
     return {
         /**
          * The ID of the widget. You must define this and make it unique.
          */
-        id: "com-chilipeppr-widget-cam", // Make the id the same as the cpdefine id
+        id: "com-chilipeppr-widget-mycam", // Make the id the same as the cpdefine id
         name: "Widget / Cam", // The descriptive name of your widget.
         desc: "This widget loads a webcam view in ChiliPeppr via WebRTC.", // A description of what your widget does
-        url: "http://raw.githubusercontent.com/xpix/widget-cam/master/auto-generated-widget.html",       // The final URL of the working widget as a single HTML file with CSS and Javascript inlined. You can let runme.js auto fill this if you are using Cloud9.
-        fiddleurl: "http://ide.c9.io/xpix/widget-cam", // The edit URL. This can be auto-filled by runme.js in Cloud9 if you'd like, or just define it on your own to help people know where they can edit/fork your widget
-        githuburl: "http://github.com/xpix/widget-cam", // The backing github repo
-        testurl: "http://widget-cam-xpix.c9users.io/widget.html",   // The standalone working widget so can view it working by itself
+        url: "http://raw.githubusercontent.com/floiolaf/widget-mycam/master/auto-generated-widget.html",       // The final URL of the working widget as a single HTML file with CSS and Javascript inlined. You can let runme.js auto fill this if you are using Cloud9.
+        fiddleurl: "http://ide.c9.io/floiolaf/widget-mycam", // The edit URL. This can be auto-filled by runme.js in Cloud9 if you'd like, or just define it on your own to help people know where they can edit/fork your widget
+        githuburl: "http://github.com/floiolaf/widget-mycam", // The backing github repo
+        testurl: "http://widget-mycam-floiolaf.c9users.io/widget.html",   // The standalone working widget so can view it working by itself
         /**
          * Define pubsub signals below. These are basically ChiliPeppr's event system.
          * ChiliPeppr uses amplify.js's pubsub system so please refer to docs at
@@ -694,8 +694,8 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
             if ("WebSocket" in window) {
                 //document.getElementById("stop").disabled = false;
                 //document.getElementById("start").disabled = true;
-                $('#com-chilipeppr-widget-cam .btn-stopstreaming').prop('disabled', false);
-                $('#com-chilipeppr-widget-cam .btn-startstreaming').prop('disabled', true);
+                $('#com-chilipeppr-widget-mycam .btn-stopstreaming').prop('disabled', false);
+                $('#com-chilipeppr-widget-mycam .btn-startstreaming').prop('disabled', true);
                 document.documentElement.style.cursor ='wait';
                 //this.server = document.getElementById("signalling_server").value.toLowerCase();
                 this.server = $('#' + this.id + ' #signalling_server').val().toLowerCase();
@@ -832,8 +832,8 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
                     }
                     //document.getElementById("stop").disabled = true;
                     //document.getElementById("start").disabled = false;
-                    $('#com-chilipeppr-widget-cam .btn-stopstreaming').prop('disabled', true);
-                    $('#com-chilipeppr-widget-cam .btn-startstreaming').prop('disabled', false);
+                    $('#com-chilipeppr-widget-mycam .btn-stopstreaming').prop('disabled', true);
+                    $('#com-chilipeppr-widget-mycam .btn-startstreaming').prop('disabled', false);
 
                     document.documentElement.style.cursor ='default';
                 };
@@ -931,8 +931,8 @@ cpdefine("inline:com-chilipeppr-widget-cam", ["chilipeppr_ready", /* other depen
         btnSetup: function() {
 
             // bind button click events
-            $('#com-chilipeppr-widget-cam .btn-startstreaming').click(this.onBtnStartClick.bind(this));
-            $('#com-chilipeppr-widget-cam .btn-stopstreaming').click(this.onBtnStopClick.bind(this));
+            $('#com-chilipeppr-widget-mycam .btn-startstreaming').click(this.onBtnStartClick.bind(this));
+            $('#com-chilipeppr-widget-mycam .btn-stopstreaming').click(this.onBtnStopClick.bind(this));
             // this.start(); // webrtc
 
             // Chevron hide/show body
@@ -1199,7 +1199,7 @@ console.log(direction);
 </head>
 
 <body>
-    <div id="com-chilipeppr-widget-cam" class="panel panel-default">
+    <div id="com-chilipeppr-widget-mycam" class="panel panel-default">
         <div class="panel-heading ">
 
             <div class="btn-toolbar pull-right" role="toolbar">
@@ -1231,7 +1231,7 @@ console.log(direction);
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">Cam</span> <span style="font-size:9px;" class="fb-build">v1</span>
+            </div> <span class="panel-title" data-toggle="popover">myCam</span> <span style="font-size:9px;" class="fb-build">v1</span>
 
         </div>
         <div class="panel-body">
@@ -1317,7 +1317,7 @@ console.log(direction);
                             <input class="form-control CAMYoffset" type="number" placeholder="Offsets" value="0" xdisabled />
                             <div class="input-group-addon">mm</div>
                         </div>
-                        <p class="descriptive-text">Offset of the Camera to the center of spindle.</p>
+                        <p class="descriptive-text">Offset of the Camera to the center of spindle/accessory.</p>
 
                         <div class="input-group">
                             <div class="input-group-addon" style="width:200px;">Real distance width:</div>
