@@ -34,7 +34,6 @@
 <body>
     <div id="com-chilipeppr-widget-mycam" class="panel panel-default">
         <div class="panel-heading ">
-
             <div class="btn-toolbar pull-right" role="toolbar">
                 <div class="btn-group">
                     <button type="button" class="btn btn-xs btn-default btn-stopstreaming" data-delay="1000" 
@@ -42,9 +41,14 @@
                         data-title="Stop Streaming" data-content="Stop streaming the video feed from your server.">
                         <span class="glyphicon glyphicon-remove-circle"></span>
                     </button>
-                    <button type="button" class="btn btn-xs btn-default btn-startstreaming" data-delay="1000" 
+                    <button type="button" class="btn btn-xs btn-default btn-start1streaming" data-delay="1000" 
                         data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
-                        data-title="Start Streaming" data-content="Start streaming the video feed from your server.">
+                        data-title="Start Streaming Spindle Camera" data-content="Start streaming Spindle Camera feed from your server.">
+                        <span class="glyphicon glyphicon-ok-circle"></span>
+                    </button>
+                    <button type="button" class="btn btn-xs btn-default btn-start2streaming" data-delay="1000" 
+                        data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
+                        data-title="Start Streaming Accessories Camera" data-content="Start streaming Accessories Camera feed from your server.">
                         <span class="glyphicon glyphicon-ok-circle"></span>
                     </button>
                     <button type="button" class="btn btn-xs btn-default btn-preferences" data-delay="1000" 
@@ -64,9 +68,9 @@
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-            </div> <span class="panel-title" data-toggle="popover">myCam</span> <span style="font-size:9px;" class="fb-build">v1</span>
-
+            </div><span class="panel-title" data-toggle="popover">myCam</span>
         </div>
+        
         <div class="panel-body">
             
             <input class="hidden" required type="text" id="signalling_server" value="192.168.1.16:8889" 
@@ -120,26 +124,26 @@
                 asdf
                 asdf</pre>
             </div>
-
         </div>
-
-
     <div class="modal fade preferences-window" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Camera  Options</h4>
+                    <h4 class="modal-title">Camera Options</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
-
-                        <p>The Camera widget will get a MJPEG Stream from your url. Please install <a href="https://github.com/jacksonliam/mjpg-streamer" target="new">mjpeg_server</a> on a linux machine or raspberry and input the complete url to the MJPEG Stream. The offset describe the distance between spindle center and camera center.</p>
+                        <p>The Camera widget will get a MJPEG Stream from your urls. Please install <a href="https://github.com/jacksonliam/mjpg-streamer" target="new">mjpg_server</a> on a linux machine or raspberry and input the complete url to the MJPEG Stream. The offset describe the distance between spindle center and camera center.</p>
                         <div class="input-group" style="width:100%;">
-                            <div class="input-group-addon" style="width:200px;">MJPEG URL:</div>
-                            <input type="string" class="form-control mjpeg-url" placeholder="url for mjpeg stream" value="http://127.0.0.1:9081" />
+                            <div class="input-group-addon" style="width:200px;">Spindle Camera mjpg-stream URL:</div>
+                            <input type="string" class="form-control mjpeg-url" placeholder="url for Spindle stream" value="http://127.0.0.1:9081" />
                         </div>
-
+                        <div class="input-group" style="width:100%;">
+                            <div class="input-group-addon" style="width:200px;">Accessories Camera mjpg-stream URL:</div>
+                            <input type="string" class="form-control mjpeg-url2" placeholder="url for Accessories stream" value="http://127.0.0.1:9082" />
+                        </div>
+                        <!--
                         <div class="input-group">
                             <div class="input-group-addon" style="width:200px;">X Offset:</div>
                             <input class="form-control CAMXoffset" type="number" placeholder="Offsets" value="0" xdisabled />
@@ -158,7 +162,7 @@
                             <div class="input-group-addon">mm</div>
                         </div>
                         <p class="descriptive-text">Real distance from left to right border in zoomed state, please measure the distance with a ruler watched across the camera in zoomed state.</p>
-            
+                        -->
 
                     </form>
                 </div>

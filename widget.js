@@ -94,8 +94,8 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
          * The ID of the widget. You must define this and make it unique.
          */
         id: "com-chilipeppr-widget-mycam", // Make the id the same as the cpdefine id
-        name: "Widget / Cam", // The descriptive name of your widget.
-        desc: "This widget loads a webcam view in ChiliPeppr via WebRTC.", // A description of what your widget does
+        name: "Widget / myCam", // The descriptive name of your widget.
+        desc: "This widget loads a webcam view in ChiliPeppr using Linux Mjpg-Stream.", // A description of what your widget does
         url: "(auto fill by runme.js)",       // The final URL of the working widget as a single HTML file with CSS and Javascript inlined. You can let runme.js auto fill this if you are using Cloud9.
         fiddleurl: "(auto fill by runme.js)", // The edit URL. This can be auto-filled by runme.js in Cloud9 if you'd like, or just define it on your own to help people know where they can edit/fork your widget
         githuburl: "(auto fill by runme.js)", // The backing github repo
@@ -514,10 +514,18 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             this.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate
             this.URL =  window.URL || window.webkitURL
         },
-        onBtnStartClick: function(evt) {
+        onBtnStart1Click: function(evt) {
             // hide popover
-            $('#' + this.id + " .btn-startstreaming").popover('hide');
-            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl);
+            $('#' + this.id + " .btn-start1streaming").popover('hide');
+            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1);
+            $('.panel-title').value = 'myCam (Spindle Camera Selected)'
+            //this.start();
+        },
+        onBtnStart2Click: function(evt) {
+            // hide popover
+            $('#' + this.id + " .btn-start2streaming").popover('hide');
+            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2);
+            $('.panel-title').value = 'myCam (Accessories Camera Selected)'
             //this.start();
         },
         onBtnStopClick: function(evt) {
@@ -610,7 +618,9 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                 //document.getElementById("stop").disabled = false;
                 //document.getElementById("start").disabled = true;
                 $('#com-chilipeppr-widget-mycam .btn-stopstreaming').prop('disabled', false);
-                $('#com-chilipeppr-widget-mycam .btn-startstreaming').prop('disabled', true);
+                $('#com-chilipeppr-widget-mycam .btn-start1streaming').prop('disabled', true);
+                $('#com-chilipeppr-widget-mycam .btn-start2streaming').prop('disabled', true);
+                $('.panel-title').value = 'myCam'
                 document.documentElement.style.cursor ='wait';
                 //this.server = document.getElementById("signalling_server").value.toLowerCase();
                 this.server = $('#' + this.id + ' #signalling_server').val().toLowerCase();
@@ -748,7 +758,9 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                     //document.getElementById("stop").disabled = true;
                     //document.getElementById("start").disabled = false;
                     $('#com-chilipeppr-widget-mycam .btn-stopstreaming').prop('disabled', true);
-                    $('#com-chilipeppr-widget-mycam .btn-startstreaming').prop('disabled', false);
+                    $('#com-chilipeppr-widget-mycam .btn-start1streaming').prop('disabled', false);
+                    $('#com-chilipeppr-widget-mycam .btn-start2streaming').prop('disabled', false);
+                    $('.panel-title').value = 'myCam'
 
                     document.documentElement.style.cursor ='default';
                 };
@@ -798,7 +810,9 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                 this.ws = null;
             }
             $('#' + this.id + " .btn-stopstreaming").prop('disabled', true);
-            $('#' + this.id + " .btn-startstreaming").prop('disabled', false);
+            $('#' + this.id + " .btn-start1streaming").prop('disabled', false);
+            $('#' + this.id + " .btn-start2streaming").prop('disabled', false);
+            $('.panel-title').value = 'myCam'
             //document.getElementById("stop").disabled = true;
             //document.getElementById("start").disabled = false;
             //document.documentElement.style.cursor ='default';
@@ -846,7 +860,8 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
         btnSetup: function() {
 
             // bind button click events
-            $('#com-chilipeppr-widget-mycam .btn-startstreaming').click(this.onBtnStartClick.bind(this));
+            $('#com-chilipeppr-widget-mycam .btn-start1streaming').click(this.onBtnStart1Click.bind(this));
+            $('#com-chilipeppr-widget-mycam .btn-start2streaming').click(this.onBtnStart2Click.bind(this));
             $('#com-chilipeppr-widget-mycam .btn-stopstreaming').click(this.onBtnStopClick.bind(this));
             // this.start(); // webrtc
 
@@ -882,13 +897,25 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             var el = $('#' + that.id);
             
             // Save parameter in localspace if user change
-            el.find('.mjpeg-url').change(function(evt) {
+            el.find('.mjpeg-url1').change(function(evt) {
                 console.log("evt:", evt);
-                that.options.mjpegurl = evt.currentTarget.value;
-                el.find('.mjpeg-image').attr("src", that.options.mjpegurl);
+                that.options.mjpegurl1 = evt.currentTarget.value;
+                if ($('.panel-title').text() == 'myCam (Spindle Camera Selected)'){
+                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl1);
+                }
                 console.log("options:", that.options);
                 that.saveOptionsLocalStorage();
             });
+            el.find('.mjpeg-url2').change(function(evt) {
+                console.log("evt:", evt);
+                that.options.mjpegurl2 = evt.currentTarget.value;
+                if ($('.panel-title').text() == 'myCam (Accessories Camera Selected)'){
+                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl2);
+                }
+                console.log("options:", that.options);
+                that.saveOptionsLocalStorage();
+            });
+            /*
             el.find('.CAMXoffset').change(function(evt) {
                 that.options.camxoffset = evt.currentTarget.value;
                 that.saveOptionsLocalStorage();
@@ -902,12 +929,22 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                 // TODO: replace css hover with jquery hover and use ZOOMdistance
                 that.saveOptionsLocalStorage();
             });
+            */
 
             // use all parameters from localspace
-            if(that.options.mjpegurl !== undefined){
-                el.find('.mjpeg-image').attr("src", that.options.mjpegurl);
-                el.find('.mjpeg-url').val(that.options.mjpegurl);
+            if(that.options.mjpegurl1 !== undefined){
+                if ($('.panel-title').text() == 'myCam (Spindle Camera Selected)'){
+                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl1);
+                }
+                el.find('.mjpeg-url1').val(that.options.mjpegurl1);
             }
+            if(that.options.mjpegurl2 !== undefined){
+                if ($('.panel-title').text() == 'myCam (Accessories Camera Selected)'){
+                    el.find('.mjpeg-image').attr("src", that.options.mjpegurl2);
+                }
+                el.find('.mjpeg-url2').val(that.options.mjpegurl2);
+            }
+            /*
             if(that.options.camxoffset !== undefined){
                 el.find('.CAMXoffset').val(that.options.camxoffset);
             }
@@ -918,10 +955,12 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                 el.find('.ZOOMdistance').val(that.options.ZOOMdistance);
                 // TODO: replace css hover with jquery hover and use ZOOMdistance
             }
+            */
             // Trigger a change at all input fields
             el.find('input').trigger('change');
 
             that.cnt = 0;
+            /*
             el.find('.mjpeg-image').click(function(e){
                if(! e.ctrlKey) {
                 return;
@@ -943,7 +982,7 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                   direction.yminus = true;
                } 
 
-console.log(direction);
+                console.log(direction);
 
                var offset = that.options.ZOOMdistance; //mm for a 100% percent move
 
@@ -963,8 +1002,7 @@ console.log(direction);
                     Id: "CamMove" + that.cnt++
                });
             });
-
-
+            */
         },
         showOptionsModal: function() {
             $('#' + this.id + ' .preferences-window').modal('show');
@@ -1045,7 +1083,11 @@ console.log(direction);
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
             $('#' + this.id + ' .overlayWrapper').removeClass('hidden');
-            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl);
+            if ($('.panel-title').text() == 'myCam (Accessories Camera Selected)'){
+                $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2);
+            } else  {
+                $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1);
+            }
             if (!(evt == null)) {
                 this.options.showBody = true;
                 this.saveOptionsLocalStorage();
