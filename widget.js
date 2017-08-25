@@ -518,14 +518,12 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             // hide popover
             $('#' + this.id + " .btn-start1streaming").popover('hide');
             $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1);
-            $('.panel-title').text('myCam (Spindle Camera Selected)');
             //this.start();
         },
         onBtnStart2Click: function(evt) {
             // hide popover
             $('#' + this.id + " .btn-start2streaming").popover('hide');
             $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2);
-            $('.panel-title').text('myCam (Accessories Camera Selected)');
             //this.start();
         },
         onBtnStopClick: function(evt) {
@@ -620,7 +618,6 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                 $('#com-chilipeppr-widget-mycam .btn-stopstreaming').prop('disabled', false);
                 $('#com-chilipeppr-widget-mycam .btn-start1streaming').prop('disabled', true);
                 $('#com-chilipeppr-widget-mycam .btn-start2streaming').prop('disabled', true);
-                $('.panel-title').value = 'myCam'
                 document.documentElement.style.cursor ='wait';
                 //this.server = document.getElementById("signalling_server").value.toLowerCase();
                 this.server = $('#' + this.id + ' #signalling_server').val().toLowerCase();
@@ -760,7 +757,6 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                     $('#com-chilipeppr-widget-mycam .btn-stopstreaming').prop('disabled', true);
                     $('#com-chilipeppr-widget-mycam .btn-start1streaming').prop('disabled', false);
                     $('#com-chilipeppr-widget-mycam .btn-start2streaming').prop('disabled', false);
-                    $('.panel-title').value = 'myCam'
 
                     document.documentElement.style.cursor ='default';
                 };
@@ -812,7 +808,6 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             $('#' + this.id + " .btn-stopstreaming").prop('disabled', true);
             $('#' + this.id + " .btn-start1streaming").prop('disabled', false);
             $('#' + this.id + " .btn-start2streaming").prop('disabled', false);
-            $('.panel-title').value = 'myCam'
             //document.getElementById("stop").disabled = true;
             //document.getElementById("start").disabled = false;
             //document.documentElement.style.cursor ='default';
@@ -900,18 +895,14 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             el.find('.mjpeg-url1').change(function(evt) {
                 console.log("evt:", evt);
                 that.options.mjpegurl1 = evt.currentTarget.value;
-                if ($('.panel-title').text() == 'myCam (Spindle Camera Selected)'){
                     el.find('.mjpeg-image').attr("src", that.options.mjpegurl1);
-                }
                 console.log("options:", that.options);
                 that.saveOptionsLocalStorage();
             });
             el.find('.mjpeg-url2').change(function(evt) {
                 console.log("evt:", evt);
                 that.options.mjpegurl2 = evt.currentTarget.value;
-                if ($('.panel-title').text() == 'myCam (Accessories Camera Selected)'){
                     el.find('.mjpeg-image').attr("src", that.options.mjpegurl2);
-                }
                 console.log("options:", that.options);
                 that.saveOptionsLocalStorage();
             });
@@ -933,15 +924,11 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
 
             // use all parameters from localspace
             if(that.options.mjpegurl1 !== undefined){
-                if ($('.panel-title').text() == 'myCam (Spindle Camera Selected)'){
                     el.find('.mjpeg-image').attr("src", that.options.mjpegurl1);
-                }
                 el.find('.mjpeg-url1').val(that.options.mjpegurl1);
             }
             if(that.options.mjpegurl2 !== undefined){
-                if ($('.panel-title').text() == 'myCam (Accessories Camera Selected)'){
                     el.find('.mjpeg-image').attr("src", that.options.mjpegurl2);
-                }
                 el.find('.mjpeg-url2').val(that.options.mjpegurl2);
             }
             /*
@@ -1083,15 +1070,13 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             $('#' + this.id + ' .hidebody span').addClass('glyphicon-chevron-up');
             $('#' + this.id + ' .hidebody span').removeClass('glyphicon-chevron-down');
             $('#' + this.id + ' .overlayWrapper').removeClass('hidden');
-            if ($('.panel-title').text() == 'myCam (Accessories Camera Selected)'){
-                $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2);
-            } else  {
-                $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1);
-            }
+            $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1);
+            /*
             if (!(evt == null)) {
                 this.options.showBody = true;
                 this.saveOptionsLocalStorage();
-            }
+            }*/
+             
         },
         /**
          * Hide the body of the panel.
