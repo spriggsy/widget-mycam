@@ -603,14 +603,14 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             // hide popover
             $('#' + this.id + " .btn-start1streaming").popover('hide');
             $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl1);
-            $('.panel-title').html = 'myCam (Spindle Camera Selected)'
+            $('.panel-title').text('myCam (Spindle Camera Selected)');
             //this.start();
         },
         onBtnStart2Click: function(evt) {
             // hide popover
             $('#' + this.id + " .btn-start2streaming").popover('hide');
             $('#' + this.id).find('.mjpeg-image').attr("src", this.options.mjpegurl2);
-            $('.panel-title').html = 'myCam (Accessories Camera Selected)'
+            $('.panel-title').text('myCam (Accessories Camera Selected)');
             //this.start();
         },
         onBtnStopClick: function(evt) {
