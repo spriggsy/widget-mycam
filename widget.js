@@ -262,7 +262,7 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                     
                 } else {
                     // not connected, show error
-                    $('#' + that.id + " .notconnected").removeClass("hidden");
+                    //$('#' + that.id + " .notconnected").removeClass("hidden");
                     that.isRunningInitCheckForCam = false;
                 }
             });
