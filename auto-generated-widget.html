@@ -16,41 +16,41 @@
     <style type='text/css'>
 /* CSS for ChiliPeppr Widget */
 #com-chilipeppr-widget-cam {
-   /*margin:10px;*/
+   margin:10px;
 }
 
-#com-chilipeppr-widget-cam .nav-tabs>li>a {
-    padding: 2px 6px;
+.nav-tabs> {
+    padding: 10px 1111px;
 }
 
-#com-chilipeppr-widget-cam .panel-body {
+.panel-body {
     padding:0;
     /*min-height:200px;*/
 }
     
-#com-chilipeppr-widget-cam .overlayWrapper {
+m.overlayWrapper {
     position:relative;
     margin:0;
     padding:0;
 }
-#com-chilipeppr-widget-cam .cam-line-horiz {
-    border-top: 5px solid red;
+.cam-line-horiz {
+    border-top: 1px solid red;
     top:50%;
     left:0;
     right:0;
     position:absolute;
 }
-#com-chilipeppr-widget-cam .cam-line-vert {
-    border-left: 5px solid red;
+.cam-line-vert {
+    border-left: 1.5px solid red;
     top:0;
     left:50%;
     bottom:0;
     position:absolute;
 }
-#com-chilipeppr-widget-cam .well {
+.well {
     margin-bottom:0;
 }
-#com-chilipeppr-widget-cam .terminal {
+.terminal {
     background-color:#000000;
     margin-top:14px;
     color:#cccccc;
@@ -59,21 +59,20 @@
 }
 
 
-
-#com-chilipeppr-widget-cam .overlayWrapper {
+#com-chilipeppr-widget-cam.overlayWrapper {
   position: relative;
   margin: 0;
   overflow: hidden;
   width: 100%;
 }
-#com-chilipeppr-widget-cam .overlayWrapper img {
+.overlayWrapper img {
   max-width: 100%;
   
   -moz-transition: all 0.3s;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
 }
-#com-chilipeppr-widget-cam .overlayWrapper:hover img {
+:hover img {
   -moz-transform: scale(4);
   -webkit-transform: scale(4);
   transform: scale(4);
@@ -1276,9 +1275,9 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             <div class="cam-line-horiz"></div>
                 <div class="cam-line-vert"></div>
             <span id="mycnc-panel" class="panel-title" data-toggle="popover">Web Cameras</span>
+            
         </div>
-                <div class="cam-line-horiz"></div>
-                <div class="cam-line-vert"></div>
+        
         <div class="panel-body">
             
             
@@ -1290,13 +1289,11 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             <input class="hidden" type="text" id="ice_servers" value="" 
                 title="array of RTCIceServer objects as valid JSON string"/>
             
-            <div class="overlayWrapper hidden">
+            <div class="overlayWrapper">
+
                 <img src="http://localhost:9081/" class="mjpeg-image" width="100%" xwidth="640" xheight="480">
-                <video id="remote-video" class="hidden" autoplay="" width="100%" xwidth="640" xheight="480">
-                    Your browser does not support the video tag.
-                </video>
-                <div class="cam-line-horiz"></div>
-                <div class="cam-line-vert"></div>
+                
+                
             </div>
             
             <div class="well install-msg notconnected hidden">
