@@ -519,9 +519,15 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
 
 
            // send the probe command to start the movement
+                var xPos = $('#com-chilipeppr-widget-mycam .CAMXoffset').val();
+                var yPos = $('#com-chilipeppr-widget-mycam .CAMYoffset').val();
+
                 var id = "tp" + this.gcodeCtr++;
-                var gcode = "G91 G0 X1\n";
                 
+ 
+
+                var gcode = "G91 G0 X" + xPos + "Y" + yPos + "\n";
+
                 
                 chilipeppr.publish("/com-chilipeppr-widget-serialport/jsonSend", {Id: id, D: gcode});
 
