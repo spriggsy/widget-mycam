@@ -514,6 +514,19 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             this.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate
             this.URL =  window.URL || window.webkitURL
         },
+        
+         onBtnmoveClick: function(evt) {
+
+                    chilipeppr.publish("/com-chilipeppr-widget-serialport/jsonSend", {
+                    D: 'G91 G1 F100' + 
+                        ' X1' 
+                         
+                         ,
+                    Id: "CamMove" + that.cnt++
+               });
+        },       
+        
+        
         onBtnStart1Click: function(evt) {
             // hide popover
             $('#' + this.id + " .btn-start1streaming").popover('hide');
@@ -860,6 +873,8 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
         btnSetup: function() {
 
             // bind button click events
+            $('#com-chilipeppr-widget-mycam .btn-move').click(this.onBtnmoveClick.bind(this));
+
             $('#com-chilipeppr-widget-mycam .btn-start1streaming').click(this.onBtnStart1Click.bind(this));
             $('#com-chilipeppr-widget-mycam .btn-start2streaming').click(this.onBtnStart2Click.bind(this));
             $('#com-chilipeppr-widget-mycam .btn-stopstreaming').click(this.onBtnStopClick.bind(this));

@@ -36,6 +36,13 @@
         <div class="panel-heading ">
             <div class="btn-toolbar pull-right" role="toolbar">
                 <div class="btn-group">
+                    
+                    <button type="button" class="btn btn-xs btn-default btn-move" data-delay="1000" 
+                        data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
+                        data-title="Move to Cross-hair" data-content="Move spindle to cross hair on camera.">
+                        <span class="glyphicon glyphicon-move"></span>
+                    </button>                    
+                    
                     <button type="button" class="btn btn-xs btn-default btn-stopstreaming" data-delay="1000" 
                         data-animation="true" data-placement="auto" data-container="body" data-trigger="hover" 
                         data-title="Stop Streaming" data-content="Stop streaming the video feed from your server.">
@@ -68,69 +75,28 @@
                         <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                     </div>
                 </div>
-               
             </div>
- 
             <span id="mycnc-panel" class="panel-title" data-toggle="popover">Cameras</span>
             
         </div>
         
         <div class="panel-body">
             
-            
-         
-            
-                  
+              
             <input class="hidden" required type="text" id="signalling_server" value="192.168.1.16:8889" 
                 title="<host>:<port>, default address is autodetected"/>
             <input class="hidden" type="text" id="ice_servers" value="" 
                 title="array of RTCIceServer objects as valid JSON string"/>
             
             <div class="overlayWrapper">
-           <div class="cam-line-horiz"></div>
+                <div class="cam-line-horiz"></div>
                 <div class="cam-line-vert"></div>
-                <img src="http://localhost:9081/" class="mjpeg-image" width="100%" xwidth="640" xheight="480">
-                
-                
-            </div>
-            
-            <div class="well install-msg notconnected hidden">
-                You are not connected to a Serial Port JSON Server. Please connect 
-                and then retry.
-            </div>
-            
-            <div class="well install-msg bados hidden">
-                Your SPJS appears to be running a <span class="os"></span> host. 
-                If you are not running on Linux or a Raspberry Pi you can't 
-                use this widget. We use uv4l as the WebRTC server and it is only
-                available for Linux. Feel free to fork this widget to add 
-                <span class="os"></span> capability.
-            </div>
-            
-            <div class="well install-msg linux hidden">
-                Your SPJS is running on Linux so you can use this widget with 
-                the uv4l WebRTC server, but we don't have that install script 
-                setup yet. If you are interested in forking this widget and 
-                mimicking the Raspberry Pi setup please feel free and then push 
-                the changes to Github http://github.com/chilipeppr/widget-cam 
-                repository.
-            </div>
 
-            <div class="well install-msg eligible hidden">
-                <p>Your SPJS is running on a Raspberry Pi so you are eligible to use 
-                this widget. You must click the install button to have this widget 
-                configure your Raspberry Pi automatically.</p>
-                
-                <button class="btn btn-default btn-install">Install Cam Server</button>
-                
-                <pre class="terminal">/home/pi
-                asdf
-                asdf
-                asdf
-                asdf
-                asdf
-                asdf</pre>
+                <img src="http://localhost:9081/" class="mjpeg-image" width="100%" xwidth="640" xheight="480">
+
             </div>
+            
+ 
         </div>
     <div class="modal fade preferences-window" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
@@ -145,13 +111,27 @@
                         <div class="input-group" style="width:100%;">
                             <div class="input-group-addon" style="width:200px;">Spindle Camera URL:</div>
                             <input type="string" class="form-control mjpeg-url1" placeholder="url for Camera stream" value="http://127.0.0.1:9081/?action=stream" />
+
                         </div>
                         <p class="descriptive-text"></p>
+                        
+                        <p>Offset from spindle:</p>
+                         <div class="input-group" style="width:100%;">
+                            <div class="input-group-addon" style="width:10px;">X:</div>
+                            <input type="string" class="form-control offset-X" style="width:50px;" placeholder="0" value="" />
+                            
+                            <div class="input-group-addon" style="width:10px;">Y:</div>
+                            <input type="string" class="form-control offset-Y" style="width:50px;" placeholder="0" value="" />
+                            
+                         </div>
+                        
+                        <p class="descriptive-text"></p>
+
                         <div class="input-group" style="width:100%;">
                             <div class="input-group-addon" style="width:200px;">Accessories Camera URL:</div>
                             <input type="string" class="form-control mjpeg-url2" placeholder="url for Camera stream" value="http://127.0.0.1:9082/?action=stream" />
                         </div>
-                        <!--
+                        
                         <div class="input-group">
                             <div class="input-group-addon" style="width:200px;">X Offset:</div>
                             <input class="form-control CAMXoffset" type="number" placeholder="Offsets" value="0" xdisabled />
@@ -170,7 +150,7 @@
                             <div class="input-group-addon">mm</div>
                         </div>
                         <p class="descriptive-text">Real distance from left to right border in zoomed state, please measure the distance with a ruler watched across the camera in zoomed state.</p>
-                        -->
+                        
 
                     </form>
                 </div>
