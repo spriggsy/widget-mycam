@@ -517,6 +517,7 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
         
          onBtnmoveClick: function(evt) {
 
+                console.log("move btn pressed");
 
            // send the probe command to start the movement
                 var xPos = $('#com-chilipeppr-widget-mycam .CAMXoffset').val();
@@ -526,7 +527,7 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                 
  
 
-                var gcode = "G91 G0 X" + xPos + "Y" + yPos + "\n";
+                var gcode = "G91 G0 X1" + xPos + " Y" + yPos + "\n";
 
                 
                 chilipeppr.publish("/com-chilipeppr-widget-serialport/jsonSend", {Id: id, D: gcode});
