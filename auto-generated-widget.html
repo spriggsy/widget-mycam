@@ -601,13 +601,18 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
         
          onBtnmoveClick: function(evt) {
 
-                    chilipeppr.publish("/com-chilipeppr-widget-serialport/jsonSend", {
-                    D: 'G91 G1 F100' + 
-                        ' X1' 
-                         
-                         ,
-                    Id: "CamMove" + that.cnt++
-               });
+
+           // send the probe command to start the movement
+                var id = "tp" + this.gcodeCtr++;
+                var gcode = "G91 G0 X1\n";
+                
+                
+                chilipeppr.publish("/com-chilipeppr-widget-serialport/jsonSend", {Id: id, D: gcode});
+
+
+
+
+
         },       
         
         
