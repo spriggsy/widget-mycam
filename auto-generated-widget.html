@@ -611,7 +611,7 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                 
  
 
-                var gcode = "G91 G0 X1" + xPos + " Y" + yPos + "\n";
+                var gcode = "G91 G0 X" + xPos + " Y" + yPos + "\n";
 
                 
                 chilipeppr.publish("/com-chilipeppr-widget-serialport/jsonSend", {Id: id, D: gcode});
