@@ -482,24 +482,7 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             // optional command to run on raspberry pi after installing uv4l
             // sudo uv4l -nopreview --auto-video_nr --driver uvc --device-id 1908:2311 --server-option '--use-ssl=yes' --server-option '--ssl-certificate-file=/etc/uv4l/cp.includesprivatekey.pem' -v -f
 
-            
-            /*
-            addEventListener("DOMContentLoaded", function() {
-                document.getElementById('signalling_server').value = signalling_server_address;
-                if (!('MediaSource' in window) || location.protocol !== "https:" || !isFirefox) {
-                    if (document.getElementById('cast_tab'))
-                        document.getElementById('cast_tab').disabled = true;
-                    document.getElementById('cast_screen').disabled = true;
-                    document.getElementById('cast_window').disabled = true;
-                    document.getElementById('cast_application').disabled = true;
-                    document.getElementById('note2').style.display = "none";
-                    document.getElementById('note4').style.display = "none";
-                } else {
-                    document.getElementById('note1').style.display = "none";
-                    document.getElementById('note3').style.display = "none";
-                }
-            });
-            */  
+ 
             
             window.onbeforeunload = function() {
                 if (this.ws) {
@@ -511,8 +494,8 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
             navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
             this.RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
             this.RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
-            this.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate
-            this.URL =  window.URL || window.webkitURL
+            this.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
+            this.URL =  window.URL || window.webkitURL;
         },
         
          onBtnmoveClick: function(evt) {
@@ -520,21 +503,16 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                 console.log("move btn pressed");
 
            // send the probe command to start the movement
-                var xPos = $('#com-chilipeppr-widget-mycam .offset-X').val();
-                var yPos = $('#com-chilipeppr-widget-mycam .offset-Y').val();
+                var xPos = $('#com-chilipeppr-widget-mycam .offsetX').val();
+                var yPos = $('#com-chilipeppr-widget-mycam .offsetY').val();
 
                 var id = "tp" + this.gcodeCtr++;
-                
- 
+     
 
                 var gcode = "G91 G0 X" + xPos + " Y" + yPos + "\n";
 
                 
                 chilipeppr.publish("/com-chilipeppr-widget-serialport/jsonSend", {Id: id, D: gcode});
-
-
-
-
 
         },       
         
@@ -938,21 +916,18 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                 console.log("options:", that.options);
                 that.saveOptionsLocalStorage();
             });
-            /*
-            el.find('.CAMXoffset').change(function(evt) {
-                that.options.camxoffset = evt.currentTarget.value;
+            
+
+
+            el.find('.offsetY').change(function(evt) {
+                that.options.offsetY = evt.currentTarget.value;
                 that.saveOptionsLocalStorage();
             });
-            el.find('.CAMYoffset').change(function(evt) {
-                that.options.camyoffset = evt.currentTarget.value;
+            el.find('.offsetX').change(function(evt) {
+                that.options.offsetX = evt.currentTarget.value;
                 that.saveOptionsLocalStorage();
             });
-            el.find('.ZOOMdistance').change(function(evt) {
-                that.options.ZOOMdistance = evt.currentTarget.value;
-                // TODO: replace css hover with jquery hover and use ZOOMdistance
-                that.saveOptionsLocalStorage();
-            });
-            */
+
 
             // use all parameters from localspace
             if(that.options.mjpegurl1 !== undefined){
@@ -963,18 +938,14 @@ cpdefine("inline:com-chilipeppr-widget-mycam", ["chilipeppr_ready", /* other dep
                     el.find('.mjpeg-image').attr("src", that.options.mjpegurl2 + '/?action=stream');
                 el.find('.mjpeg-url2').val(that.options.mjpegurl2);
             }
-            /*
-            if(that.options.camxoffset !== undefined){
-                el.find('.CAMXoffset').val(that.options.camxoffset);
+    
+            if(that.options.offsetY !== undefined){
+                el.find('.offsetY').val(that.options.offsetY);
             }
-            if(that.options.camyoffset !== undefined){
-                el.find('.CAMYoffset').val(that.options.camyoffset);
+            if(that.options.offsetX !== undefined){
+                el.find('.offsetX').val(that.options.offsetX);
             }
-            if(that.options.ZOOMdistance !== undefined){
-                el.find('.ZOOMdistance').val(that.options.ZOOMdistance);
-                // TODO: replace css hover with jquery hover and use ZOOMdistance
-            }
-            */
+
             // Trigger a change at all input fields
             el.find('input').trigger('change');
 
