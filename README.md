@@ -1,7 +1,7 @@
 # com-chilipeppr-widget-mycam
 Dual-webcam widget to ChiliPeppr using Linux Mjpg-Stream.
 
-![alt text](screenshot.png "Screenshot")
+
 
 ## ChiliPeppr Widget / myCam
 
