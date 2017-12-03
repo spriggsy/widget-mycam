@@ -1,5 +1,5 @@
 # com-chilipeppr-widget-mycam
-Dual-webcam widget to ChiliPeppr using Linux Mjpg-Stream.Allows setting ofset of camera from spindle and moving to that location vi button.
+Dual-webcam widget to ChiliPeppr using Linux Mjpg-Stream./nAllows setting offset of camera from spindle and moving to that location vi button.
 
 ![alt text](screenshot.png "Screenshot")
 
@@ -13,7 +13,7 @@ not conflict with other ChiliPeppr widgets.
 | -------------         | ------------- | 
 | ID                    | com-chilipeppr-widget-mycam |
 | Name                  | Widget / myCam |
-| Description           | Dual-webcam widget to ChiliPeppr using Linux Mjpg-Stream.Allows setting ofset of camera from spindle and moving to that location vi button. |
+| Description           | Dual-webcam widget to ChiliPeppr using Linux Mjpg-Stream./nAllows setting offset of camera from spindle and moving to that location vi button. |
 | chilipeppr.load() URL | http://raw.githubusercontent.com/spriggsy/widget-mycam/master/auto-generated-widget.html |
 | Edit URL              | http://ide.c9.io/spriggsy/duel-cam-widget |
 | Github URL            | http://github.com/spriggsy/widget-mycam |
@@ -132,7 +132,7 @@ The table below shows, in order, the methods and properties inside the widget/el
           </tr>
       </thead>
       <tbody>
-      <tr valign="top"><td>id</td><td>string</td><td>"com-chilipeppr-widget-mycam"<br><br>The ID of the widget. You must define this and make it unique.</td></tr><tr valign="top"><td>name</td><td>string</td><td>"Widget / myCam"</td></tr><tr valign="top"><td>desc</td><td>string</td><td>"Dual-webcam widget to ChiliPeppr using Linux Mjpg-Stream.Allows setting ofset of camera from spindle and moving to that location vi button."</td></tr><tr valign="top"><td>url</td><td>string</td><td>"http://raw.githubusercontent.com/spriggsy/widget-mycam/master/auto-generated-widget.html"</td></tr><tr valign="top"><td>fiddleurl</td><td>string</td><td>"http://ide.c9.io/spriggsy/duel-cam-widget"</td></tr><tr valign="top"><td>githuburl</td><td>string</td><td>"http://github.com/spriggsy/widget-mycam"</td></tr><tr valign="top"><td>testurl</td><td>string</td><td>"http://duel-cam-widget-spriggsy.c9users.io/widget.html"</td></tr><tr valign="top"><td>publish</td><td>object</td><td>Please see docs above.<br><br>Define the publish signals that this widget/element owns or defines so that
+      <tr valign="top"><td>id</td><td>string</td><td>"com-chilipeppr-widget-mycam"<br><br>The ID of the widget. You must define this and make it unique.</td></tr><tr valign="top"><td>name</td><td>string</td><td>"Widget / myCam"</td></tr><tr valign="top"><td>desc</td><td>string</td><td>"Dual-webcam widget to ChiliPeppr using Linux Mjpg-Stream./nAllows setting offset of camera from spindle and moving to that location vi button."</td></tr><tr valign="top"><td>url</td><td>string</td><td>"http://raw.githubusercontent.com/spriggsy/widget-mycam/master/auto-generated-widget.html"</td></tr><tr valign="top"><td>fiddleurl</td><td>string</td><td>"http://ide.c9.io/spriggsy/duel-cam-widget"</td></tr><tr valign="top"><td>githuburl</td><td>string</td><td>"http://github.com/spriggsy/widget-mycam"</td></tr><tr valign="top"><td>testurl</td><td>string</td><td>"http://duel-cam-widget-spriggsy.c9users.io/widget.html"</td></tr><tr valign="top"><td>publish</td><td>object</td><td>Please see docs above.<br><br>Define the publish signals that this widget/element owns or defines so that
 other widgets know how to subscribe to them and what they do.</td></tr><tr valign="top"><td>subscribe</td><td>object</td><td>Please see docs above.<br><br>Define the subscribe signals that this widget/element owns or defines so that
 other widgets know how to subscribe to them and what they do.</td></tr><tr valign="top"><td>foreignPublish</td><td>object</td><td>Please see docs above.<br><br>Document the foreign publish signals, i.e. signals owned by other widgets
 or elements, that this widget/element publishes to.</td></tr><tr valign="top"><td>foreignSubscribe</td><td>object</td><td>Please see docs above.<br><br>Document the foreign subscribe signals, i.e. signals owned by other widgets
